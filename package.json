@@ -1,0 +1,17 @@
+{
+  "name": "study-vite-electron",
+  "version": "0.0.1",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "basic": "pnpm --filter=@apps/basic",
+    "vep": "pnpm --filter=@apps/vite-electron-plugin",
+    "vpe": "pnpm --filter=@apps/vite-plugin-electron",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Lastor",
+  "license": "ISC",
+  "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
+}
