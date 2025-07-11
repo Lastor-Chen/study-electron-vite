@@ -2,12 +2,27 @@
   "name": "@apps/basic",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "dist-electron/index.js",
+  "type": "module",
   "scripts": {
-    "dev": "node index.js",
+    "preview": "electron dist-electron/index.js",
+    "dev:elec": "cross-env NODE_ENV=dev electron dist-electron/index.js",
+    "dev:fe": "vite",
+    "build:fe": "vue-tsc -b && vite build",
+    "build:elec": "tsdown",
+    "build:tsc": "rm -rf ./dist-electron && tsc -p tsconfig.electron.json",
+    "build:pack": "electron-builder --config electron-builder.config.js",
+    "build": "pnpm build:fe && pnpm build:elec && pnpm build:pack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "Lastor",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "dayjs": "^1.11.13"
+  },
+  "devDependencies": {
+    "tsdown": "^0.12.9",
+    "vue-tsc": "^2.2.12"
+  }
 }

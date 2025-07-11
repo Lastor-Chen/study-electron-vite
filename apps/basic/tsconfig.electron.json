@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "outDir": "dist-electron",
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "include": ["electron"]
+}
