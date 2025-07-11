@@ -6,10 +6,6 @@ electron 可以想假想成後端 Server, 前端將最終打包好的 html / css
 
 開發模式下, electron 可以用 loadURL 的方式掛載 vite dev server, 讓前端維持原有的 vite HMR 開發方式。但是 electron 這邊得透過 cli 執行，不是直接運行 node，要實現 HMR 就比較困難了。
 
-electron 這邊使用 ts 的話, 需要單獨處理 ts 編譯。由於 preload 限制 CJS, main 如果要走 ESM 會需要分開編譯, tsc 雖能自動根據 .cts 副檔名去編譯不同格式, 可速度較慢。tsdown 或 tsup 雖然速度快, 但得編譯兩次。
-
-要如何實現 electron 的 watch mode 以及 ts onSave 自動編譯 esm vs cjs 是個難題。
-
 ## Usage
 
 在 workspace root 時...
@@ -50,9 +46,20 @@ $ pnpm basic build
 
 ## Electron ts 編譯
 
-### tsc
+electron 這邊使用 ts 的話, 需要單獨處理 ts 編譯。由於 preload 限制 CJS, main 如果要走 ESM 會需要分開編譯, tsc 雖能自動根據 .cts 副檔名去編譯不同格式, 可速度較慢。tsdown 或 tsup 雖然速度快, 但得編譯兩次。
 
-速度較慢, 需配置 tsconfig, 但可以根據 NodeNext 機制自動用副檔名判斷要編譯成 cjs 還是 esm。
+要如何把 ts watch 編譯跟 electron restart 綑綁在一起會是個難題。
+
+### tsc / vue-tsc
+
+只有 tsc 編譯時會進行 tscheck 報錯並中斷, 雖然其他編譯器速度快, 但無法強制 type 檢查
+
+- 可自動根據 .cts / .mts 副檔名去編譯成不同 format
+- 速度較慢, 需配置 tsconfig
+- `vue-tsc -b` 這個 `--build, -b` 是服務於 references 設定, 會將參照有 include 的檔案進行編譯
+- 如果 electron 目錄不想被 vue-tsc 一起編譯, 可以不納入 references, 或是不使用 `-b` 改用 `--noEmit -p tsconfig.app.json`
+
+ps. 新的 create-vite vue-ts 模板用了 references 把多個 tsconfig 串起來, build 時 tscheck 改用 `vue-tsc -b` 來掃描所有參照, 他沒寫 `--noEmit` 是因為藏在 `@vue/tsconfig` 裡面了
 
 ### tsdown / tsup
 
