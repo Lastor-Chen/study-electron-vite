@@ -9,7 +9,7 @@
     "dev:elec": "cross-env NODE_ENV=development tsdown --silent --watch",
     "dev:fe": "vite",
     "build:fe": "vue-tsc -b && vite build",
-    "build:elec": "tsdown",
+    "build:elec": "tsc --noEmit -p tsconfig.electron.json && tsdown",
     "build:tsc": "rm -rf ./dist-electron && tsc -p tsconfig.electron.json",
     "build:pack": "electron-builder --config electron-builder.config.js",
     "build": "pnpm build:fe && pnpm build:elec && pnpm build:pack",

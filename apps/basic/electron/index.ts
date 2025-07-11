@@ -1,4 +1,3 @@
-// @ts-check
 import path from 'node:path'
 
 import { app, BrowserWindow, ipcMain } from 'electron'
@@ -9,8 +8,10 @@ if (isDev) {
   console.log('Run electron app with frontend vite dev server')
 }
 
+let win: BrowserWindow | undefined
+
 function createWindow() {
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
