@@ -60,7 +60,7 @@ tsup 使用 esbuild, tsdown 是 Vue 團隊使用 Rust 開發的後繼者, 用法
 
 - 這兩套設計概念都是統一編譯, 無法做到細粒度控制 fileA 編譯 esm, fileB 編譯 cjs
   - 可用 array config 批次處理的方式來緩解, 但他實質上還是編譯兩次
-- watch mode 不好整, 複雜度變高
+- 可參考 electron bin/cli.js 的寫法去整合 watch mode, 實現 afterCompile restart electron
 - tsdown 的子依賴有 peer vue-tsc 版本, 不想被限制的話用 tsup
 
 ### Vite
@@ -71,3 +71,8 @@ tsup 使用 esbuild, tsdown 是 Vue 團隊使用 Rust 開發的後繼者, 用法
 - 需用 lib mode 搭配 build.ssr 或 rollupOptions.external 才能避免被套件被 bundle
 - lib mode 概念是走 entry file 無法指定資料夾, multi files 的情況還不知如何處理
   - 備考: https://github.com/vitejs/vite/discussions/8098
+
+## TODO
+
+- [x] electron ts 編譯時 + watch 重啟
+- [] 也許 watch 機制能用程序性呼叫跟前端 vite 綁在同個進入點

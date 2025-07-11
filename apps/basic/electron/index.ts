@@ -4,7 +4,7 @@ import path from 'node:path'
 import { app, BrowserWindow, ipcMain } from 'electron'
 import dayjs from 'dayjs'
 
-const isDev = process.env.NODE_ENV === 'dev'
+const isDev = process.env.NODE_ENV === 'development'
 if (isDev) {
   console.log('Run electron app with frontend vite dev server')
 }

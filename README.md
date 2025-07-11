@@ -28,3 +28,8 @@ This repo is a study on setting up project with Electron + Vite
   - 控好 devDeps 可以避免多餘的套件被包進去
   - 前端用的套件會被 vite bundle, 不需要聲明到 package.json
   - electron 套件本身是 devDeps, 最終 build 會內建在裡面, 不需要包含在 node_modules
+
+## TODO
+
+- [] child process
+- [] run node native in ESM
