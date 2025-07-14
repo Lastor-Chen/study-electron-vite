@@ -23,7 +23,7 @@ This repo is a study on setting up project with Electron + Vite
 - 需要設定 package.json 的 main, 他會以此作為 entry file
 - node_modules 打包議題
   - 如同後端部署會把 node_modules 也帶進去, 所以不需要像前端那樣 bundle packages
-  - 會依據 package.json 裡面的 deps 去 copy, 如果放在 root 共用就不會被包到
+  - 會依據 package.json 裡面的 deps 去 copy, 如果放在 devDeps 或是 root 共用就不會被包到
   - runtime 會用到的 deps 得在子專案的 package.json 都聲明才會被包到, 無法只放在 root 共用
   - 控好 devDeps 可以避免多餘的套件被包進去
   - 前端用的套件會被 vite bundle, 不需要聲明到 package.json
@@ -32,4 +32,5 @@ This repo is a study on setting up project with Electron + Vite
 ## TODO
 
 - [] child process
+- [] electron 端, 多資料夾 common, child 編譯
 - [] run node native in ESM
