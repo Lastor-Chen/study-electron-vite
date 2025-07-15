@@ -1,7 +1,9 @@
 import path from 'node:path'
 
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, utilityProcess } from 'electron'
 import dayjs from 'dayjs'
+
+import { ping } from '#shared/utils/index.js'
 
 let win: BrowserWindow | undefined
 
@@ -17,12 +19,32 @@ function createWindow() {
   if (process.env.VITE_DEV_SERVER_URL) {
     win.loadURL('http://localhost:5173/')
   } else {
-    win.loadFile(path.join(import.meta.dirname, '../dist/index.html'))
+    win.loadFile(path.join(import.meta.dirname, '../../dist/index.html'))
   }
+}
+
+// TODO try MessageChannelMain?
+function forkChild() {
+  const child = utilityProcess.fork(path.join(import.meta.dirname, './child/index.js'), [], {
+    stdio: 'inherit',
+  })
+
+  ipcMain.handle('call-child', async (_, msg: string) => {
+    const result = await new Promise((resolve) => {
+      child.once('message', (returnVal) => {
+        resolve(returnVal)
+      })
+
+      child.postMessage(msg)
+    })
+
+    return result
+  })
 }
 
 app.whenReady().then(() => {
   createWindow()
+  forkChild()
 })
 
 app.on('window-all-closed', () => {
@@ -39,7 +61,8 @@ app.on('activate', () => {
 })
 
 ipcMain.handle('ping', () => {
-  const date = dayjs().format('YYYY/MM/DD')
+  const date = dayjs().format('YYYY/MM/DD HH:mm:ss')
+  const result = ping()
 
-  return `pong ${date}`
+  return `${result} ${date}`
 })

@@ -9,7 +9,12 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "strictNullChecks": true,
-    "noEmit": true
+    "noEmit": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "#shared/*": ["shared/*"]
+    }
   },
-  "include": ["electron"]
+  "include": ["electron", "shared"]
 }
