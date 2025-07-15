@@ -7,6 +7,18 @@ This repo is a study on setting up project with Electron + Vite
 - electron 等套件有 postinstall, pnpm 會阻擋並提示執行 `pnpm approve-builds` 來允許, 但有時用 `pnpm add <package>` 會無提示, 要重下一次 `pnpm install` 才會出現
 - `pnpm why <package> -r` 要加上 `-r` 才能遞迴搜尋子專案的依賴樹
 
+### 打 patch
+
+只能在實際安裝位置, 也就是 workspace 根目錄進行
+
+```
+# 建立臨時目錄, 在該目錄下去修改內容
+$ pnpm patch <package>
+
+# 修改完成後 commit 他
+$ pnpm patch-commit <temp_dir_path>
+```
+
 ## Electron
 - `app.whenReady()` 在 ESM 下仍舊不支援 top-level await
 - 新版 electron 用 ctrl-c kill 時會送出 exit(1), 而 pnpm 接收到非安全離開信號也會報錯, 這是正常現象

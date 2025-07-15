@@ -6,3 +6,6 @@ onlyBuiltDependencies:
   - electron
   - electron-winstaller
   - esbuild
+
+patchedDependencies:
+  vite-electron-plugin: patches/vite-electron-plugin.patch
