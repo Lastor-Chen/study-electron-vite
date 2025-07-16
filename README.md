@@ -1,6 +1,23 @@
 # Study electron vite
 
-This repo is a study on setting up project with Electron + Vite
+研究、實驗 electron 使用不同的 vite plugin 架構專案的方式, 以 pnpm workspace 做 monorepo 建構
+
+```
+# 目錄結構
+apps/
+  basic/ # 不使用 vite plugin 整合建構
+  vite-plugin-electron/ # 使用該 plugin 建構
+  vite-electron-plugin/ # 使用該 plugin 建構
+```
+
+## Usage
+
+透過 root 寫好的 package.json scripts 去呼叫子專案 scripts
+
+```
+# pnpm --filter=@apps/vite-electron-plugin run dev
+$ pnpm vep dev
+```
 
 ## pnpm
 
@@ -19,16 +36,18 @@ $ pnpm patch <package>
 $ pnpm patch-commit <temp_dir_path>
 ```
 
-## Electron
+## Node22
+
+- 沒定義 package.json type 的話, node 會預設用 CJS 同時自動偵測 ESM 關鍵字, 偵測到就會用 ESM 執行並彈出警告
+
+## electron
+
 - `app.whenReady()` 在 ESM 下仍舊不支援 top-level await
 - 新版 electron 用 ctrl-c kill 時會送出 exit(1), 而 pnpm 接收到非安全離開信號也會報錯, 這是正常現象
 - electron cli 沒提供 watch mode, 無法用一般手段做到熱更新
 - html 需要加入 meta CSP 設置, 不然 devtools 會跳 electron 警告
   - https://www.electronjs.org/docs/latest/tutorial/security#7-define-a-content-security-policy
 - electron cli 無法直接吃 node 參數, 如 `--watch`, `--env-file`
-
-## Node22
-- 沒定義 package.json type 的話, node 會預設用 CJS 同時自動偵測 ESM 關鍵字, 偵測到就會用 ESM 執行並彈出警告
 
 ## electron-builder
 

@@ -6,6 +6,14 @@ electron 可以想假想成後端 Server, 前端將最終打包好的 html / css
 
 開發模式下, electron 可以用 loadURL 的方式掛載 vite dev server, 讓前端維持原有的 vite HMR 開發方式。但是 electron 這邊得透過 cli 執行，不是直接運行 node，要實現 HMR 就比較困難了。
 
+```
+# 如果可直接透過 node 執行, 就能直接掛 watch mode (node20+)
+$ node index.js --watch
+
+# 是透過 electron cli 去跑, 他沒提供 --watch 之類的功能
+$ electron index.js
+```
+
 ## Usage
 
 在 workspace root 時...
@@ -46,7 +54,9 @@ $ pnpm basic build
 
 ## Electron ts 編譯
 
-electron 這邊使用 ts 的話, 需要單獨處理 ts 編譯。由於 preload 限制 CJS, main 如果要走 ESM 會需要分開編譯, tsc 雖能自動根據 .cts 副檔名去編譯不同格式, 可速度較慢。tsdown 或 tsup 雖然速度快, 但得編譯兩次。
+electron 要走 ESM base 的話, 必需要開啟一些不安全的模式才能使用 ESM 的 preload, 所以多數情況 preload 都建議維持 CJS。
+
+由於 preload 得單獨編譯成 CJS, 所以處理上會產生困難點, 只有 tsc 可以依據 `.cts / .mts` 副檔名去自動判斷, esbuild 這類 bundler 只能多編譯一次單獨處理 preload。
 
 要如何把 ts watch 編譯跟 electron restart 綑綁在一起會是個難題。
 
@@ -65,10 +75,30 @@ ps. 新的 create-vite vue-ts 模板用了 references 把多個 tsconfig 串起�
 
 tsup 使用 esbuild, tsdown 是 Vue 團隊使用 Rust 開發的後繼者, 用法差不多。
 
-- 這兩套設計概念都是統一編譯, 無法做到細粒度控制 fileA 編譯 esm, fileB 編譯 cjs
+- 這兩套設計概念都是 bundler 而非 compiler, 會從一個 entry 進行統一打包, 無法做到細粒度單獨去控制 A 編譯成 esm, B 編譯成 cjs
   - 可用 array config 批次處理的方式來緩解, 但他實質上還是編譯兩次
-- 可參考 electron bin/cli.js 的寫法去整合 watch mode, 實現 afterCompile restart electron
+- tsdown 對 entry 進行優化, 可以吃 glob `src/**/*.ts`
 - tsdown 的子依賴有 peer vue-tsc 版本, 不想被限制的話用 tsup
+- 可參考 electron bin/cli.js 的寫法去整合 watch mode, 實現 afterCompile restart electron
+
+### ESM vs CJS
+
+混合情況下會有一些坑, 下列變因會互相影響 tsc 判斷, bundler 則不完全看 tsconfig 會有不同行為:
+
+- package.json 的 type 設定
+- tsconfig 的 module, moduleResolution 設定
+- 實際是寫 import or require
+- nodenext 下會看副檔名 `.cts` or `.mts`
+
+type module 混 cjs 編譯時的一些坑:
+
+- 只存在 `.cts` 時, 會報錯說找不到 require 等定義, 但同時存在 `.ts .cts` 則不會出現報錯
+- VScode 有時會無法正確判斷是否為 node 環境, require 等關鍵字會時不時紅線, 時不時又正常
+- 如果會用到 CJS 語法, 最好都安裝 @types/node 不要依賴自動推斷, 會誤判且行為規則不明
+- 用 import 寫可被編譯成 ESM or CJS, 但寫 require 無法被編譯為 ESM
+- bundler 會為了處理 .default 的差異, 編譯 import 為 require 時會加上 __toESM 做轉換, tsc 則只會純翻譯
+- tsconfig 要設定 nodenext 才會去參照 package.json 的 type 設定
+- 會統一進 vite 之類打包工具處理的話 tsconfig 的 moduleResolution 應設定為 bundler
 
 ### Vite
 
