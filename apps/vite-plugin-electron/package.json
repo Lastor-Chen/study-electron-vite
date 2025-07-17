@@ -2,10 +2,10 @@
   "name": "@apps/vite-plugin-electron",
   "version": "1.0.0",
   "description": "",
-  "main": "dist-electron/index.js",
+  "main": "dist-electron/electron/index.js",
   "type": "module",
   "scripts": {
-    "preview": "electron dist-electron/index.js",
+    "preview": "electron dist-electron/electron/index.js",
     "dev": "vite",
     "build:vite": "vue-tsc -b && vite build",
     "build:pack": "electron-builder --config electron-builder.config.js",
@@ -19,6 +19,7 @@
     "dayjs": "^1.11.13"
   },
   "devDependencies": {
+    "glob": "^11.0.3",
     "vite-plugin-electron": "^0.29.0"
   }
 }

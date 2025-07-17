@@ -28,3 +28,12 @@ https://zhuanlan.zhihu.com/p/497638546
 - 因為 preload 是另一個 build 進入點, 所以套件預設將 `config.build.emptyOutDir` 設為 false, 避免熱重啟時互相 clear build 結果
 - 內附的 `notBundle` plugin 他 doc 寫說只會排除 cjs npm-pkg
   - 可利用 vite `build.ssr` 去做到 no bundle, no minify, node 端不壓縮也利於定位 error 位置
+
+## preload CommonJS 編譯問題
+
+如果希望遵守 node.js type module 的機制, 那理論上 preload 副檔名應該使用 `.{cts,cjs}` 去標明。
+
+但 vite 在編譯 ts 時, 會先給 esbuild 編譯之後才丟給 rollup bundle, 而 vite 預設只處理 `.ts`。需要另外設定 `esbuild.include` 告訴它要處理 `.cts` 才行。否則直接進 rollup 遇上 `import type` 之類的 ts 語法會報錯。
+
+參考:<br>
+https://vite.dev/guide/features.html#transpile-only

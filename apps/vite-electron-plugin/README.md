@@ -21,15 +21,16 @@
 - 它 package.json 輸出設定沒寫好, 引用時抓不到 type, 得自己打 patch 去改
 - deps 依賴沒設好 `acorn` 被寫到了 devDeps, 用 pnpm 之類非攤平的管理工具時得單獨安裝他
 
-## ESM 配置
+## ESM first 問題
 
-作者只有把 swc 的 transform 部分設定給開出來, 能調整的不多。嘗試過使用 plugin.configResolved 去改 config, 讓他 extensions 追加 `.cts` 之類的會報錯。
-
-目前實驗是可以改 `transformOptions.format` 去編譯成 ESM, 但他內部配置是默認會用 CJS 而產生一些衝突, 例如 `alias` plugin 將會無法使用。
-
-雖然無法單獨控制 preload 編譯成 CJS, 但實驗結果發現直接用 require 去寫不要用 import 的話, swc 的輸出結果會保留 require, 可利用此特性維持 CJS 語法, 但沒辦法單獨控制副檔名輸出為 `.cjs`。
-
-正常情況 type module 模式下去執行 `.js` 時, node 偵測到裡面是 CJS 會跳警告。但 preload 可能是 electron 在內部用其他方式去執行的, 所以即使輸出成 `preload.js` 也不會跳 node 警告。
+- 這套件的設定是以輸出 CJS 為準, 開出來的 API 無法單獨控制 preload 的編譯方式
+- input 不吃 `.cts` 目前找不到可以追加的設定, 只能命名為 `preload.ts`
+- 可以透過 `transformOptions.format` 將整體編譯格式改為 ESM
+- preload 得用 hack 的方式, 利用 `require` 會被忽略的特性, 強行在 format ESM 的設定下維持 CJS 語法
+  - 但是在 ESM 環境下 require 將無法取得套件的 type 全會變成 any
+- preload 輸出的副檔名可利用 `dest` plugin 修改為 `.cjs`
+  - 不改也行, 大概因為 preload 是 electron 內部用其他方式執行的, 所以在 ESM 環境下跑 CJS 的 `.js` 時 node.js 沒有跳警告
+- 改成 ESM 後 `alias` plugin 將無法使用
 
 ### alias 替代方案
 
