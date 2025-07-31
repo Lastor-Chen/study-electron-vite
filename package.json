@@ -7,6 +7,7 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "basic": "pnpm --filter=@apps/basic",
+    "myp": "pnpm --filter=@apps/my-vite-plugin-tsdown",
     "vep": "pnpm --filter=@apps/vite-electron-plugin",
     "vpe": "pnpm --filter=@apps/vite-plugin-electron",
     "test": "echo \"Error: no test specified\" && exit 1"
