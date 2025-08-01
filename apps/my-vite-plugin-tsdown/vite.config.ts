@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import tsdownPlugin from './plugins/vite-plugin-tsdown'
 
 export default defineConfig(() => {
   return {
@@ -7,6 +8,11 @@ export default defineConfig(() => {
     base: './',
     plugins: [
       vue(),
+      tsdownPlugin({
+        input: './electron',
+        preload: './electron/preload.cts',
+        outDir: './dist-electron',
+      }),
     ],
   }
 })
