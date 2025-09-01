@@ -60,7 +60,7 @@ electron 要走 ESM base 的話, 必需要開啟一些不安全的模式才能�
 
 要如何把 ts watch 編譯跟 electron restart 綑綁在一起會是個難題。
 
-### tsc / vue-tsc
+### tsc and vue-tsc
 
 只有 tsc 編譯時會進行 tscheck 報錯並中斷, 雖然其他編譯器速度快, 但無法強制 type 檢查
 
@@ -71,7 +71,7 @@ electron 要走 ESM base 的話, 必需要開啟一些不安全的模式才能�
 
 ps. 新的 create-vite vue-ts 模板用了 references 把多個 tsconfig 串起來, build 時 tscheck 改用 `vue-tsc -b` 來掃描所有參照, 他沒寫 `--noEmit` 是因為藏在 `@vue/tsconfig` 裡面了
 
-### tsdown / tsup
+### tsdown vs tsup
 
 tsup 使用 esbuild, tsdown 是 Vue 團隊使用 Rust 開發的後繼者, 用法差不多。
 
@@ -108,6 +108,13 @@ type module 混 cjs 編譯時的一些坑:
 - 需用 lib mode 搭配 build.ssr 或 rollupOptions.external 才能避免被套件被 bundle
 - lib mode 概念是走 entry file 無法指定資料夾, multi files 的情況還不知如何處理
   - 備考: https://github.com/vitejs/vite/discussions/8098
+
+## tsdown 問題紀錄
+
+- 現況 tsdown 升級可能會造成行為變更, 因為內部 rolldown 還是 beta 版
+- 有兩個 build 進程, clean 都打開會互相洗掉, 或許可以比照 vite-electron-plugin 的作法都關掉 clean
+- tsconfig 設為 `moduleResolution: bundler` 時, ts 看到 `import 'electron'` 會錯誤的去專案找 `electron/index.ts`
+- tsdown 可以參照 tsconfig 解析 path alias, 但要注意 tsc 不行
 
 ## TODO
 

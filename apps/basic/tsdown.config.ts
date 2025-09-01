@@ -40,15 +40,23 @@ export default defineConfig([
   {
     ...commonConfig,
     entry: ['./electron/preload.cts'],
+    outDir: 'dist-electron/electron',
     format: ['cjs'],
+    clean: false, // 會依賴內部 watch 執行順序
   },
   {
     ...commonConfig,
-    entry: ['./electron', '!electron/preload.cts'],
+    entry: [
+      './electron/index.ts',
+      './electron/child/**/*.ts',
+      './shared/**/*.ts',
+    ],
     format: ['esm'],
+    unbundle: true,
+    clean: true,
     hooks: {
       'build:done': (ctx) => {
-        const entryFile = path.join(ctx.options.outDir, './index.js')
+        const entryFile = path.join(ctx.options.outDir, './electron/index.js')
         startElectron(entryFile)
       },
     }
