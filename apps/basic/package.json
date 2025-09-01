@@ -22,7 +22,7 @@
     "dayjs": "^1.11.13"
   },
   "devDependencies": {
-    "tsdown": "^0.12.9",
+    "tsdown": "^0.14.2",
     "vue-tsc": "^2.2.12"
   }
 }
