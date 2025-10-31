@@ -65,5 +65,5 @@ $ pnpm patch-commit <temp_dir_path>
 - electron 端, 多資料夾 common, child 編譯
   - [x] vite-electron-plugin
   - [x] vite-plugin-electron
-  - [] basic
+  - [x] basic
 - [] run node native in ESM

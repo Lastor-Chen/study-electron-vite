@@ -1,5 +1,7 @@
 // CJS only
-const { contextBridge, ipcRenderer } = require('electron')
+import type { ElectronAPI } from '@shared/types.js'
+
+const { contextBridge, ipcRenderer } = require('electron') as typeof import('electron')
 
 contextBridge.exposeInMainWorld('versions', {
   node: () => process.versions.node,
@@ -11,4 +13,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   ping() {
     return ipcRenderer.invoke('ping')
   },
-})
+  callChild(msg) {
+    return ipcRenderer.invoke('call-child', msg)
+  },
+} satisfies ElectronAPI)
