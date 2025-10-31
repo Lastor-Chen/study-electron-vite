@@ -90,6 +90,7 @@ tsup 使用 esbuild, tsdown 是 Vue 團隊使用 Rust 開發的後繼者, 用法
 
 - 可透過 tsdown hooks.build:node 去實現 watch + electron restart
 - 有兩個 build 進程, clean 都打開會互相洗掉 (vite-electron-plugin 的作法都關掉 clean)
+- watch 不會只監聽 entry 而是整個目錄, 需要手動指定目標
 
 ### ESM vs CJS
 

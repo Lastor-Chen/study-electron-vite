@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "preview": "electron dist-electron/electron/main/index.js",
-    "dev:elec": "cross-env NODE_ENV=development tsdown --silent --watch",
+    "dev:elec": "cross-env NODE_ENV=development tsdown --silent -w electron -w shared",
     "dev:fe": "vite",
     "build:fe": "vue-tsc -b && vite build",
     "build:elec": "tsc -p tsconfig.electron.json && tsdown",
