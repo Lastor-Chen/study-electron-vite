@@ -68,10 +68,13 @@ electron 要走 ESM base 的話, 必需要開啟一些不安全的模式才能�
 - 速度較慢, 需配置 tsconfig
 - `vue-tsc -b` 這個 `--build, -b` 是服務於 references 設定, 會將參照有 include 的檔案進行編譯
 - 如果 electron 目錄不想被 vue-tsc 一起編譯, 可以不納入 references, 或是不使用 `-b` 改用 `--noEmit -p tsconfig.app.json`
+- tsc 編譯需設定 `moduleResolution: nodenext` 才能限制一定要填副檔名
 
 ps. 新的 create-vite vue-ts 模板用了 references 把多個 tsconfig 串起來, build 時 tscheck 改用 `vue-tsc -b` 來掃描所有參照, 他沒寫 `--noEmit` 是因為藏在 `@vue/tsconfig` 裡面了
 
 ### tsdown vs tsup
+
+> tsup 已經宣布不再積極維護, 作者建議改用 tsdown。
 
 tsup 使用 esbuild, tsdown 是 Vue 團隊使用 Rust 開發的後繼者, 用法差不多。
 
@@ -80,15 +83,23 @@ tsup 使用 esbuild, tsdown 是 Vue 團隊使用 Rust 開發的後繼者, 用法
 - tsdown 對 entry 進行優化, 可以吃 glob `src/**/*.ts`
 - tsdown 的子依賴有 peer vue-tsc 版本, 不想被限制的話用 tsup
 - 可參考 electron bin/cli.js 的寫法去整合 watch mode, 實現 afterCompile restart electron
+- 現況 tsdown 升級可能會造成行為變更, 因為內部 rolldown 還是 beta 版
+- tsdown 可以參照 tsconfig 解析 path alias, 但要注意 tsc 不行
+
+### tsdown watch then restart electron
+
+- 可透過 tsdown hooks.build:node 去實現 watch + electron restart
+- 有兩個 build 進程, clean 都打開會互相洗掉 (vite-electron-plugin 的作法都關掉 clean)
 
 ### ESM vs CJS
 
 混合情況下會有一些坑, 下列變因會互相影響 tsc 判斷, bundler 則不完全看 tsconfig 會有不同行為:
 
 - package.json 的 type 設定
-- tsconfig 的 module, moduleResolution 設定
+- tsconfig 的 `module`, `moduleResolution` 設定
 - 實際是寫 import or require
-- nodenext 下會看副檔名 `.cts` or `.mts`
+- `nodenext` 下會看副檔名 `.cts` or `.mts`
+- tsconfig 設為 `moduleResolution: bundler` 時, `import 'electron'` ts 會錯誤的去專案找 `electron/index.ts`
 
 type module 混 cjs 編譯時的一些坑:
 
@@ -97,7 +108,7 @@ type module 混 cjs 編譯時的一些坑:
 - 如果會用到 CJS 語法, 最好都安裝 @types/node 不要依賴自動推斷, 會誤判且行為規則不明
 - 用 import 寫可被編譯成 ESM or CJS, 但寫 require 無法被編譯為 ESM
 - bundler 會為了處理 .default 的差異, 編譯 import 為 require 時會加上 __toESM 做轉換, tsc 則只會純翻譯
-- tsconfig 要設定 nodenext 才會去參照 package.json 的 type 設定
+- tsconfig 要設定 `nodenext` 才會去參照 package.json 的 type 設定
 - 會統一進 vite 之類打包工具處理的話 tsconfig 的 moduleResolution 應設定為 bundler
 
 ### Vite
@@ -108,13 +119,6 @@ type module 混 cjs 編譯時的一些坑:
 - 需用 lib mode 搭配 build.ssr 或 rollupOptions.external 才能避免被套件被 bundle
 - lib mode 概念是走 entry file 無法指定資料夾, multi files 的情況還不知如何處理
   - 備考: https://github.com/vitejs/vite/discussions/8098
-
-## tsdown 問題紀錄
-
-- 現況 tsdown 升級可能會造成行為變更, 因為內部 rolldown 還是 beta 版
-- 有兩個 build 進程, clean 都打開會互相洗掉, 或許可以比照 vite-electron-plugin 的作法都關掉 clean
-- tsconfig 設為 `moduleResolution: bundler` 時, ts 看到 `import 'electron'` 會錯誤的去專案找 `electron/index.ts`
-- tsdown 可以參照 tsconfig 解析 path alias, 但要注意 tsc 不行
 
 ## TODO
 
