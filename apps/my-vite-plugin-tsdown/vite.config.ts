@@ -9,9 +9,13 @@ export default defineConfig(() => {
     plugins: [
       vue(),
       tsdownPlugin({
-        input: './electron',
-        preload: './electron/preload.cts',
+        input: [
+          './electron/main/index.ts',
+          './electron/child/index.ts',
+          './shared/**/*.ts',
+        ],
         outDir: './dist-electron',
+        preload: './electron/preload/index.cts',
       }),
     ],
   }
