@@ -1,12 +1,25 @@
 import { build as tsBuild } from 'tsdown'
 import type { Options } from 'tsdown'
 
-export async function tsCompile(
-  main: string | string[],
-  preload: string,
-  outDir: string,
-  onSuccess?: () => void
-) {
+export type TsCompileOptions = {
+  main: string | string[]
+  preload: string
+  outDir: string
+  watch?: string | string[]
+  logInfo?: boolean
+  buildEnd?: () => void
+}
+
+export async function tsCompile(options: TsCompileOptions) {
+  const {
+    main,
+    preload,
+    outDir,
+    watch,
+    logInfo,
+    buildEnd,
+  } = options
+
   let threadCount = 0
 
   const commonConfig = {
@@ -14,12 +27,12 @@ export async function tsCompile(
     external: 'electron',
     tsconfig: 'tsconfig.electron.json',
     config: false,
-    watch: ['electron', 'shared'],
-    logLevel: 'warn',
+    watch,
+    logLevel: logInfo ? 'info' : 'warn',
     onSuccess() {
       if (threadCount >= 1) {
         threadCount = 0
-        onSuccess?.()
+        buildEnd?.()
       } else {
         threadCount++
       }
@@ -29,6 +42,7 @@ export async function tsCompile(
   // compile main
   await tsBuild({
     ...commonConfig,
+    name: 'Main',
     entry: Array.isArray(main) ? [...main, `!${preload}`] : [main, `!${preload}`],
     outDir,
     format: ['esm'],
@@ -38,6 +52,7 @@ export async function tsCompile(
   // compile preload
   await tsBuild({
     ...commonConfig,
+    name: 'Preload',
     entry: preload,
     outDir: 'dist-electron/electron/preload',
     format: ['cjs'],

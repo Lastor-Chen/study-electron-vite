@@ -14,8 +14,9 @@ export default defineConfig(() => {
           './electron/child/index.ts',
           './shared/**/*.ts',
         ],
-        outDir: './dist-electron',
         preload: './electron/preload/index.cts',
+        outDir: './dist-electron',
+        watch: ['electron', 'shared'],
       }),
     ],
   }

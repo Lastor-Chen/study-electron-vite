@@ -6,12 +6,10 @@
   "type": "module",
   "scripts": {
     "preview": "electron .",
-    "dev:elec": "cross-env NODE_ENV=development tsdown --silent -w electron -w shared",
-    "dev:fe": "vite",
-    "build:fe": "vue-tsc -b && vite build",
-    "build:elec": "tsc -p tsconfig.electron.json && tsdown",
-    "build:pack": "electron-builder --config electron-builder.config.js",
-    "build": "pnpm build:fe && pnpm build:elec && pnpm build:pack",
+    "dev": "vite",
+    "build:vite": "vue-tsc -b && vite build",
+    "build:app": "electron-builder --config electron-builder.config.js",
+    "build": "pnpm build:fe && pnpm build:elec && pnpm build:app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
