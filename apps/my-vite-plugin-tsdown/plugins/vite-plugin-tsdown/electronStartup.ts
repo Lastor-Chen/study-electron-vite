@@ -1,28 +1,37 @@
 import { spawn } from 'node:child_process'
-import type { ChildProcessWithoutNullStreams } from 'node:child_process'
+import type { ChildProcess, SpawnOptions } from 'node:child_process'
 
 import electronPath from 'electron'
 
-let child: ChildProcessWithoutNullStreams | null = null
+let electronProc: ChildProcess | null = null
 
-export function spawnElectron() {
-  if (child && !child.killed) {
-    child.removeAllListeners() // 避免 restart 觸發 onClose
-    child.kill()
-  }
+/**
+ * electron argv path 給 `.` 會以 packageJson.main 作為進入點
+ * @param argv default is `['.', '--no-sandbox']`
+ */
+export async function spawnElectron(
+  argv = ['.', '--no-sandbox'],
+  options?: SpawnOptions,
+) {
+  await killElectronIfExist()
 
-  child = spawn(electronPath as unknown as string, ['./dist-electron/electron/main/index.js'])
-
-  child.stdout.on('data', (data) => {
-    console.log(data.toString())
+  electronProc = spawn(electronPath as unknown as string, argv, {
+    stdio: 'inherit',
+    ...options,
   })
 
-  child.stderr.on('data', (data) => {
-    console.log(data.toString())
-  })
-
-  child.on('close', () => {
+  electronProc.once('close', () => {
     console.log('electron process closed')
     process.exit()
   })
+}
+
+async function killElectronIfExist() {
+  if (electronProc && !electronProc.killed) {
+    await new Promise((resolve) => {
+      electronProc!.removeAllListeners() // 避免 restart 觸發 onClose
+      electronProc!.once('exit', resolve)
+      electronProc!.kill()
+    })
+  }
 }

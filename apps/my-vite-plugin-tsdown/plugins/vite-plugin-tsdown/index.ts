@@ -20,7 +20,7 @@ export default function tsdownPlugin(options: Options): Plugin {
       } = options
 
       void tsCompile(input, preload, outDir, () => {
-        spawnElectron()
+        void spawnElectron()
       })
     },
   }
