@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { tsdownPlugin, spawnElectron } from './plugins/vite-plugin-tsdown'
+import { tsdownPlugin } from './plugins/vite-plugin-tsdown'
 
 export default defineConfig(() => {
   return {
@@ -21,7 +21,6 @@ export default defineConfig(() => {
         },
         watch: ['electron', 'shared'],
         tsconfig: 'tsconfig.electron.json',
-        onDevSuccess: () => spawnElectron(),
       }),
     ],
   }

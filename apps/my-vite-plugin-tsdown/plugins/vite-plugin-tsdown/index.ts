@@ -3,20 +3,23 @@ import { tsCompile } from './compiler'
 import type { Plugin } from 'vite'
 import type { Options as TsdownOptions } from 'tsdown'
 import type { BaseOptions } from './compiler'
+import { spawnElectron } from './electronStartup'
 
 export { spawnElectron } from './electronStartup'
 
 export interface TsdownPluginOptions extends BaseOptions {
+  /** @default "./electron" */
+  watch?: string | string[]
   onDevSuccess?: TsdownOptions['onSuccess']
 }
 
 const pluginName = 'vite-plugin-electron-tsdown'
 
-export function tsdownPlugin(options: TsdownPluginOptions): Plugin[] {
+export function tsdownPlugin(options: TsdownPluginOptions = {}): Plugin[] {
   const {
     main,
     preload,
-    watch,
+    watch = './electron',
     tsconfig,
     onDevSuccess,
   } = options
@@ -32,7 +35,9 @@ export function tsdownPlugin(options: TsdownPluginOptions): Plugin[] {
           preload,
           tsconfig,
           watch,
-          onSuccess: onDevSuccess,
+          onSuccess: onDevSuccess ?? (() => {
+            void spawnElectron()
+          }),
         })
       },
     },

@@ -1,14 +1,31 @@
 import { build as tsBuild } from 'tsdown'
-import type { Options as TsdownOptions } from 'tsdown'
+import type { Options } from 'tsdown'
+
+interface TsdownOptions extends Omit<Options, 'config'> {
+  /** @default main: "Main", preload: "Preload" */
+  name?: Options['name']
+  /** Default to main: `"./electron/index.ts"`, preload: `"./electron/preload.cts"` */
+  entry?: Options['entry']
+  /** @default "./dist-electron" */
+  outDir?: Options['outDir']
+  /** @default main: "esm", preload: "cjs" */
+  format?: Options['format']
+  /** @default main: true, preload: false */
+  clean?: Options['clean']
+  /** @default "electron" */
+  external?: Options['external']
+  /** @default serve: "warn", build: "info" */
+  logLevel?: Options['logLevel']
+}
 
 export type BaseOptions = {
-  main: TsdownOptions
-  preload: TsdownOptions
+  main?: TsdownOptions
+  preload?: TsdownOptions
   tsconfig?: TsdownOptions['tsconfig']
-  watch?: string | string[]
 }
 
 export interface TsCompileOptions extends BaseOptions {
+  watch?: string | string[]
   onSuccess?: TsdownOptions['onSuccess']
   logInfo?: boolean
 }
@@ -23,7 +40,7 @@ export async function tsCompile(options: TsCompileOptions) {
     onSuccess,
   } = options
 
-  const commonConfig: TsdownOptions = {
+  const commonConfig: Options = {
     config: false,
     external: 'electron',
     tsconfig,
@@ -35,7 +52,9 @@ export async function tsCompile(options: TsCompileOptions) {
   await tsBuild({
     ...commonConfig,
     name: 'Main',
-    format: ['esm'],
+    entry: './electron/index.ts',
+    format: 'esm',
+    outDir: './dist-electron',
     unbundle: true,
     ...main,
   })
@@ -44,7 +63,10 @@ export async function tsCompile(options: TsCompileOptions) {
   await tsBuild({
     ...commonConfig,
     name: 'Preload',
-    format: ['cjs'],
+    entry: './electron/preload.cts',
+    format: 'cjs',
+    outDir: './dist-electron',
+    clean: false,
     onSuccess,
     ...preload,
   })
