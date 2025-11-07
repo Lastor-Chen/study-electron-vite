@@ -1,11 +1,9 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import tsdownPlugin from './plugins/vite-plugin-tsdown'
+import { tsdownPlugin, spawnElectron } from './plugins/vite-plugin-tsdown'
 
 export default defineConfig(() => {
   return {
-    // electron 是走 file:// 協定, 要給相對路徑
-    base: './',
     plugins: [
       vue(),
       tsdownPlugin({
@@ -22,6 +20,8 @@ export default defineConfig(() => {
           outDir: './dist-electron/electron/preload',
         },
         watch: ['electron', 'shared'],
+        tsconfig: 'tsconfig.electron.json',
+        onDevSuccess: () => spawnElectron(),
       }),
     ],
   }

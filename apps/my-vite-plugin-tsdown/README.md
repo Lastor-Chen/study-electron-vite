@@ -12,5 +12,6 @@
 
 ## TODO
 
+- 確認 path alias
 - import.meta.env 替代方案
 - 能否以 tsdown.config 為主?
