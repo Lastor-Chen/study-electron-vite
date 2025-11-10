@@ -17,5 +17,6 @@
 
 ## TODO
 
+- 用 r key 觸發 vite restart 會有問題
 - 確認 path alias
 - import.meta.env 替代方案

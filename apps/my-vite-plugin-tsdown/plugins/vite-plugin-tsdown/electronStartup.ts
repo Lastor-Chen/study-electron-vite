@@ -7,6 +7,7 @@ declare global {
   namespace NodeJS {
     interface Process {
       electronProc: ChildProcess | undefined
+      hasHandleExit: boolean | undefined
     }
   }
 }
@@ -31,6 +32,14 @@ export async function spawnElectron(
     console.log('electron process closed')
     process.exit()
   })
+
+  // 確保只掛一次 onExit, 只有用 q key 關閉 vite 才會觸發
+  if (!process.hasHandleExit) {
+    process.hasHandleExit = true
+    process.on('exit', async () => {
+      await killElectronIfExist()
+    })
+  }
 }
 
 async function killElectronIfExist() {
