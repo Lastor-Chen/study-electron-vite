@@ -13,10 +13,11 @@
 - tsdown onSuccess 可以直接跑 `$ electron .` 但有缺點
   - 無法監控其 exit 後關閉 vite
   - 若是 vite config change 會殘留殭屍進程
-- vite config change 時，是 reload 不是 restart，子程序變數會遺失，但可改存在 global process
+- vite config change 時，是 reload 不是 restart，子程序變數會遺失，但可改存在 global process 解決
+- 不能判斷 `child.killed` 才去 kill electron，否則 vite r key restart 的生命週期不一樣，會導致誤判產生殭屍進程
+- process 相關監聽要用 `once` 去掛，避免 vite config reload 時報出監聽重複掛太多的問題
 
 ## TODO
 
-- 用 r key 觸發 vite restart 會有問題
 - 確認 path alias
 - import.meta.env 替代方案

@@ -36,7 +36,7 @@ export async function spawnElectron(
   // 確保只掛一次 onExit, 只有用 q key 關閉 vite 才會觸發
   if (!process.hasHandleExit) {
     process.hasHandleExit = true
-    process.on('exit', async () => {
+    process.once('exit', async () => {
       await killElectronIfExist()
     })
   }
@@ -44,7 +44,7 @@ export async function spawnElectron(
 
 async function killElectronIfExist() {
   await new Promise<void>((resolve) => {
-    if (process.electronProc && !process.electronProc.killed) {
+    if (process.electronProc) {
       process.electronProc.removeAllListeners() // 避免 restart 觸發 onClose
       process.electronProc.once('exit', resolve)
       process.electronProc.kill()
