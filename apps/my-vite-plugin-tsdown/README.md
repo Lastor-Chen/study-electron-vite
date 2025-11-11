@@ -17,7 +17,10 @@
 - 不能判斷 `child.killed` 才去 kill electron，否則 vite r key restart 的生命週期不一樣，會導致誤判產生殭屍進程
 - process 相關監聽要用 `once` 去掛，避免 vite config reload 時報出監聽重複掛太多的問題
 
-## TODO
+## import.meta.env
 
-- 確認 path alias
-- import.meta.env 替代方案
+- tsdown 沒有讀取 .env file 的機制
+- tsdown 有個 `env` 參數，效果類似包裝過的 `define`
+- 原理是在 compile time 做字串替換, 所以 `import.meta.env` 會是空的
+- `process.env.VAR_NAME` 也會被指定的 `env` 替換
+- vite plugin 可以透過 `configResolved` 取得 env 再去注入給 tsdown

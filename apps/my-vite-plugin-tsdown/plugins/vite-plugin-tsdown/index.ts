@@ -22,12 +22,21 @@ export function tsdownPlugin(options: TsdownPluginOptions = {}): Plugin[] {
     watch = './electron',
     tsconfig,
     onDevSuccess,
+    env,
   } = options
+
+  let mergedEnv: Record<string, any> = {}
 
   return [
     {
       name: pluginName,
       apply: 'serve',
+      configResolved(config) {
+        mergedEnv = {
+          ...config.env,
+          ...env,
+        }
+      },
       configureServer() {
         // 不 await 避免阻塞 vite
         void tsCompile({
@@ -35,6 +44,7 @@ export function tsdownPlugin(options: TsdownPluginOptions = {}): Plugin[] {
           preload,
           tsconfig,
           watch,
+          env: mergedEnv,
           onSuccess: onDevSuccess ?? (() => {
             void spawnElectron()
           }),
@@ -52,6 +62,12 @@ export function tsdownPlugin(options: TsdownPluginOptions = {}): Plugin[] {
           base: './',
         }
       },
+      configResolved(config) {
+        mergedEnv = {
+          ...config.env,
+          ...env,
+        }
+      },
       // 只會在 vite 成功完成所有的 build 任務後觸發
       closeBundle() {
         console.log('\ntsdown building...')
@@ -60,6 +76,7 @@ export function tsdownPlugin(options: TsdownPluginOptions = {}): Plugin[] {
           preload,
           tsconfig,
           logInfo: true,
+          env: mergedEnv,
         })
       },
     },

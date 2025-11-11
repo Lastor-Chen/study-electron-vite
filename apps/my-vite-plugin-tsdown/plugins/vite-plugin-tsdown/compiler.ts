@@ -22,6 +22,7 @@ export type BaseOptions = {
   main?: TsdownOptions
   preload?: TsdownOptions
   tsconfig?: TsdownOptions['tsconfig']
+  env?: TsdownOptions['env']
 }
 
 export interface TsCompileOptions extends BaseOptions {
@@ -38,6 +39,7 @@ export async function tsCompile(options: TsCompileOptions) {
     watch,
     logInfo,
     onSuccess,
+    env,
   } = options
 
   const commonConfig: Options = {
@@ -46,6 +48,7 @@ export async function tsCompile(options: TsCompileOptions) {
     tsconfig,
     watch,
     logLevel: logInfo ? 'info' : 'warn',
+    env,
   }
 
   // compile main
