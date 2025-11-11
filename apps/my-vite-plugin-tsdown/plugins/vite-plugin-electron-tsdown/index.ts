@@ -1,5 +1,7 @@
 import { tsCompile } from './compiler'
 import { spawnElectron } from './electronStartup'
+import { cyan, green } from './simpleColor'
+import tsdownPkg from 'tsdown/package.json' with { type: 'json' }
 
 import type { Plugin } from 'vite'
 import type { Options as TsdownOptions } from 'tsdown'
@@ -49,6 +51,11 @@ export function tsdownPlugin(options: TsdownPluginOptions = {}): Plugin[] {
       configureServer() {
         if (!isServe) return
 
+        console.log(
+          cyan(`\ntsdown v${tsdownPkg.version}`),
+          green('building for development...'),
+        )
+
         // 不 await 避免阻塞 vite
         void tsCompile({
           main,
@@ -65,7 +72,11 @@ export function tsdownPlugin(options: TsdownPluginOptions = {}): Plugin[] {
       closeBundle() {
         if (!isBuild) return
 
-        console.log('\ntsdown building...')
+        console.log(
+          cyan(`\ntsdown v${tsdownPkg.version}`),
+          green('building for production...'),
+        )
+
         void tsCompile({
           main,
           preload,
