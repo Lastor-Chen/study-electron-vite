@@ -1,9 +1,9 @@
 import { tsCompile } from './compiler'
+import { spawnElectron } from './electronStartup'
 
 import type { Plugin } from 'vite'
 import type { Options as TsdownOptions } from 'tsdown'
 import type { BaseOptions } from './compiler'
-import { spawnElectron } from './electronStartup'
 
 export { spawnElectron } from './electronStartup'
 
@@ -12,8 +12,6 @@ export interface TsdownPluginOptions extends BaseOptions {
   watch?: string | string[]
   onDevSuccess?: TsdownOptions['onSuccess']
 }
-
-const pluginName = 'vite-plugin-electron-tsdown'
 
 export function tsdownPlugin(options: TsdownPluginOptions = {}): Plugin[] {
   const {
@@ -25,12 +23,23 @@ export function tsdownPlugin(options: TsdownPluginOptions = {}): Plugin[] {
     env,
   } = options
 
+  let isServe: boolean = false
+  let isBuild: boolean = false
   let mergedEnv: Record<string, any> = {}
 
   return [
     {
-      name: pluginName,
-      apply: 'serve',
+      name: 'vite-plugin-electron-tsdown',
+      config(config, { command }) {
+        // save vite command
+        isServe = command === 'serve'
+        isBuild = command === 'build'
+
+        if (isBuild) return {
+          // electron 是走 file:// 協定, 要給相對路徑
+          base: config.base || './',
+        }
+      },
       configResolved(config) {
         mergedEnv = {
           ...config.env,
@@ -38,6 +47,8 @@ export function tsdownPlugin(options: TsdownPluginOptions = {}): Plugin[] {
         }
       },
       configureServer() {
+        if (!isServe) return
+
         // 不 await 避免阻塞 vite
         void tsCompile({
           main,
@@ -50,26 +61,10 @@ export function tsdownPlugin(options: TsdownPluginOptions = {}): Plugin[] {
           }),
         })
       },
-    },
-    {
-      name: pluginName,
-      apply: 'build',
-      config(config) {
-        if (config.base) return
-
-        // electron 是走 file:// 協定, 要給相對路徑
-        return {
-          base: './',
-        }
-      },
-      configResolved(config) {
-        mergedEnv = {
-          ...config.env,
-          ...env,
-        }
-      },
       // 只會在 vite 成功完成所有的 build 任務後觸發
       closeBundle() {
+        if (!isBuild) return
+
         console.log('\ntsdown building...')
         void tsCompile({
           main,
