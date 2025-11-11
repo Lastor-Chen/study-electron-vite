@@ -1,0 +1,25 @@
+{
+  "name": "@apps/my-vite-plugin-tsdown",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist-electron/electron/main/index.js",
+  "type": "module",
+  "scripts": {
+    "preview": "electron .",
+    "dev": "vite",
+    "build:vite": "vue-tsc -b && vite build",
+    "build:app": "electron-builder --config electron-builder.config.js",
+    "build": "pnpm build:vite && pnpm build:app",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Lastor",
+  "license": "ISC",
+  "dependencies": {
+    "dayjs": "^1.11.13"
+  },
+  "devDependencies": {
+    "tsdown": "^0.15.12",
+    "vue-tsc": "^3.1.3"
+  }
+}
