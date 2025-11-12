@@ -4,7 +4,7 @@ import { cyan, green } from './simpleColor'
 import tsdownPkg from 'tsdown/package.json' with { type: 'json' }
 
 import type { Plugin } from 'vite'
-import type { Options as TsdownOptions } from 'tsdown'
+import type { InlineConfig } from 'tsdown'
 import type { BaseOptions } from './compiler'
 
 export { spawnElectron } from './electronStartup'
@@ -12,7 +12,7 @@ export { spawnElectron } from './electronStartup'
 export interface TsdownPluginOptions extends BaseOptions {
   /** @default "./electron" */
   watch?: string | string[]
-  onDevSuccess?: TsdownOptions['onSuccess']
+  onDevSuccess?: InlineConfig['onSuccess']
 }
 
 export function tsdownPlugin(options: TsdownPluginOptions = {}): Plugin[] {

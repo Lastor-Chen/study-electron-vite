@@ -1,21 +1,21 @@
 import { build as tsBuild } from 'tsdown'
-import type { Options } from 'tsdown'
+import type { InlineConfig } from 'tsdown'
 
-interface TsdownOptions extends Omit<Options, 'config'> {
+interface TsdownOptions extends Omit<InlineConfig, 'config'> {
   /** @default main: "Main", preload: "Preload" */
-  name?: Options['name']
+  name?: InlineConfig['name']
   /** Default to main: `"./electron/index.ts"`, preload: `"./electron/preload.cts"` */
-  entry?: Options['entry']
+  entry?: InlineConfig['entry']
   /** @default "./dist-electron" */
-  outDir?: Options['outDir']
+  outDir?: InlineConfig['outDir']
   /** @default main: "esm", preload: "cjs" */
-  format?: Options['format']
+  format?: InlineConfig['format']
   /** @default main: true, preload: false */
-  clean?: Options['clean']
+  clean?: InlineConfig['clean']
   /** @default "electron" */
-  external?: Options['external']
+  external?: InlineConfig['external']
   /** @default serve: "warn", build: "info" */
-  logLevel?: Options['logLevel']
+  logLevel?: InlineConfig['logLevel']
 }
 
 export type BaseOptions = {
@@ -42,7 +42,7 @@ export async function tsCompile(options: TsCompileOptions) {
     env,
   } = options
 
-  const commonConfig: Options = {
+  const commonConfig: InlineConfig = {
     config: false,
     external: 'electron',
     tsconfig,
