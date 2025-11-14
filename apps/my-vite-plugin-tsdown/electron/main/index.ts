@@ -5,6 +5,9 @@ import dayjs from 'dayjs'
 
 import { ping } from '@shared/utils/index.js' // tsc 不會處理 path alias
 
+console.log('env.DEV', import.meta.env.DEV)
+console.log('env.FOO', import.meta.env.FOO)
+
 const isDev = process.env.NODE_ENV === 'development'
 if (isDev) {
   console.log('Run electron app with frontend vite dev server')

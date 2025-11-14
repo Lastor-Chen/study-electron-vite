@@ -1,37 +1,21 @@
-import { tsCompile } from './compiler'
-import { spawnElectron } from './electronStartup'
+import { tsBuild } from './compiler'
 import { cyan, green } from './simpleColor'
 import tsdownPkg from 'tsdown/package.json' with { type: 'json' }
 
 import type { Plugin } from 'vite'
-import type { InlineConfig } from 'tsdown'
-import type { BaseOptions } from './compiler'
+import type { TsBuildOptions } from './compiler'
 
 export { spawnElectron } from './electronStartup'
 
-export interface TsdownPluginOptions extends BaseOptions {
-  /** @default "./electron" */
-  watch?: string | string[]
-  onDevSuccess?: InlineConfig['onSuccess']
-}
+export type TsdownPluginOptions = TsBuildOptions
 
-export function tsdownPlugin(options: TsdownPluginOptions = {}): Plugin[] {
-  const {
-    main,
-    preload,
-    watch = './electron',
-    tsconfig,
-    onDevSuccess,
-    env,
-  } = options
-
+export function tsdownPlugin(options: TsBuildOptions): Plugin[] {
   let isServe: boolean = false
   let isBuild: boolean = false
-  let mergedEnv: Record<string, any> = {}
 
   return [
     {
-      name: 'vite-plugin-electron-tsdown',
+      name: 'vite-plugin-run-tsdown',
       config(config, { command }) {
         // save vite command
         isServe = command === 'serve'
@@ -43,10 +27,24 @@ export function tsdownPlugin(options: TsdownPluginOptions = {}): Plugin[] {
         }
       },
       configResolved(config) {
-        mergedEnv = {
-          ...config.env,
-          ...env,
+        // merge vite env
+        const importMetaEnv = config.env
+
+        if (options.shared?.env) {
+          options.shared.env = {
+            ...importMetaEnv,
+            ...options.shared.env,
+          }
         }
+
+        options.builds.forEach((build) => {
+          if (build.env) {
+            build.env = {
+              ...importMetaEnv,
+              ...build.env,
+            }
+          }
+        })
       },
       configureServer() {
         if (!isServe) return
@@ -57,15 +55,10 @@ export function tsdownPlugin(options: TsdownPluginOptions = {}): Plugin[] {
         )
 
         // 不 await 避免阻塞 vite
-        void tsCompile({
-          main,
-          preload,
-          tsconfig,
-          watch,
-          env: mergedEnv,
-          onSuccess: onDevSuccess ?? (() => {
-            void spawnElectron()
-          }),
+        void tsBuild({
+          builds: options.builds,
+          shared: options.shared,
+          onAllSuccess: options.onAllSuccess,
         })
       },
       // 只會在 vite 成功完成所有的 build 任務後觸發
@@ -77,12 +70,10 @@ export function tsdownPlugin(options: TsdownPluginOptions = {}): Plugin[] {
           green('building for production...'),
         )
 
-        void tsCompile({
-          main,
-          preload,
-          tsconfig,
-          logInfo: true,
-          env: mergedEnv,
+        void tsBuild({
+          builds: options.builds,
+          shared: options.shared,
+          onAllSuccess: options.onAllSuccess,
         })
       },
     },
