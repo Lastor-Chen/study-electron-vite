@@ -4,7 +4,8 @@ import type { InlineConfig } from 'tsdown'
 export type TsBuildOptions = {
   builds: InlineConfig[]
   shared?: InlineConfig
-  onAllSuccess?: Exclude<InlineConfig['onSuccess'], string>
+  /** 只在 builds 全部成功完成後執行, 這會覆蓋所有的 onSuccess */
+  onAllSuccess?: InlineConfig['onSuccess']
 }
 
 const defaultConfig: InlineConfig = {
@@ -16,18 +17,19 @@ export async function tsBuild(options: TsBuildOptions) {
 
   let buildCount = 0
   for (const userConfig of builds) {
-    await build({
+    const buildOption: InlineConfig = {
       ...defaultConfig,
       ...shared,
       ...userConfig,
-      ...(onAllSuccess ? {
-        onSuccess(...args) {
-          if (buildCount++ === (builds.length - 1)) {
-            buildCount = 0
-            onAllSuccess(...args)
-          }
-        },
-      } : undefined),
-    })
+    }
+
+    const isLast = buildCount === builds.length - 1
+    if (onAllSuccess) {
+      buildOption.onSuccess = isLast ?
+        onAllSuccess :
+        () => { buildCount++ }
+    }
+
+    await build(buildOption)
   }
 }
