@@ -2,20 +2,19 @@
 
 ## Memo
 
-- vite 的勾子會監聽整個專案的 change
-- tsdown 程序性使用要注意分開 compile preload, 不然 cjs 會導致他去 bundle `import {} from 'electron'`, 導致 electron 無法正常處理
-- electron 執行的進入點 path 給 `.` 就會去找 packageJson.main 的設定
-- 程序性使用 vs config 的行為不明，似乎最好是禁用 config 避免干擾
-- 多 build thread 時 onSuccess, watch 等機制是各自獨立的
-  - 如果各自 watch, 因為 main thread 要忽略 preload, 設定繁瑣
-  - 統一 watch 則會有 onSuccess 被觸發兩次的問題, 但可只掛一個來解決
-- 拉起 electron 時，不下 `--no-sandbox` 會無法 restart
+- vite 跟 tsdown 的 watch 預設都會監聽整個專案
+- `$ electron .` 他會去找 packageJson.main
+- 程序化使用與 tsdown.config 混用的行為不明，最好 `config: false` 禁用
+- multi builds 時 onSuccess, watch 是各自獨立的, 所以會有兩種 onSuccess 方案
+  - 各自只 watch 自己, onSuccess 都掛上去
+  - 統一 watch 所有目錄, onSuccess 只掛一個
 - tsdown onSuccess 可以直接跑 `$ electron .` 但有缺點
-  - 無法監控其 exit 後關閉 vite
-  - 若是 vite config change 會殘留殭屍進程
-- vite config change 時，是 reload 不是 restart，子程序變數會遺失，但可改存在 global process 解決
+  - owner 會是 tsdown, 無法監聽他 exit 後一併關閉 vite
+  - (已解決) 若是 vite restart 會重 run tsdown, 但無法關閉前一個 electron 殘留殭屍進程
+- vite restart (改 config) 是 reload config 不是 restart node, 閉包變數會被清掉, 但 global.process 會是同一個
 - 不能判斷 `child.killed` 才去 kill electron，否則 vite r key restart 的生命週期不一樣，會導致誤判產生殭屍進程
-- process 相關監聽要用 `once` 去掛，避免 vite config reload 時報出監聽重複掛太多的問題
+- process 相關監聽要用 `once` 去掛，避免 vite restart 時報出監聽重複掛太多的問題
+- 新版 rolldown 改了 ESM import 編譯成 cjs 的方式, 不會再注入一段 __toESM 的 code
 
 ## import.meta.env
 

@@ -1,7 +1,6 @@
 // CJS only
+import { contextBridge, ipcRenderer } from 'electron'
 import type { ElectronAPI } from '@shared/types.js'
-
-const { contextBridge, ipcRenderer } = require('electron') as typeof import('electron')
 
 contextBridge.exposeInMainWorld('versions', {
   node: () => process.versions.node,
