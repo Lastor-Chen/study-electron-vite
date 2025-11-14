@@ -13,6 +13,8 @@ const defaultConfig: InlineConfig = {
 }
 
 export async function tsBuild(options: TsBuildOptions) {
+  if (process.isTsdownWatched) return
+
   const { builds, shared, onAllSuccess } = options
 
   let buildCount = 0
@@ -21,6 +23,12 @@ export async function tsBuild(options: TsBuildOptions) {
       ...defaultConfig,
       ...shared,
       ...userConfig,
+    }
+
+    // 記住有無 watch, 確保只會執行一次
+    // 避免 vite restart 時, tsdown 重複掛載 listener
+    if (buildOption.watch && !process.isTsdownWatched) {
+      process.isTsdownWatched = true
     }
 
     const isLast = buildCount === builds.length - 1

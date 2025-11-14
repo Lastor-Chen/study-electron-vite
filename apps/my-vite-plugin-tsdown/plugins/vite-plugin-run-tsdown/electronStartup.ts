@@ -1,16 +1,7 @@
 import { spawn } from 'node:child_process'
-import type { ChildProcess, SpawnOptions } from 'node:child_process'
+import type { SpawnOptions } from 'node:child_process'
 
 import electronPath from 'electron'
-
-declare global {
-  namespace NodeJS {
-    interface Process {
-      electronProc: ChildProcess | undefined
-      hasHandleExit: boolean | undefined
-    }
-  }
-}
 
 /**
  * electron argv path 給 `.` 會以 packageJson.main 作為進入點
