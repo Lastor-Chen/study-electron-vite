@@ -37,6 +37,8 @@ function forkChild() {
     stdio: 'inherit',
   })
 
+  child.on('exit', () => console.log('[child] exit'))
+
   ipcMain.handle('call-child', async (_, msg: string) => {
     const result = await new Promise((resolve) => {
       child.once('message', (returnVal) => {

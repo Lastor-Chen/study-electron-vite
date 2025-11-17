@@ -23,3 +23,14 @@
 - 原理是在 compile time 做字串替換, 所以 `import.meta.env` 會是空的
 - `process.env.VAR_NAME` 也會被指定的 `env` 替換
 - vite plugin 可以透過 `configResolved` 取得 env 再去注入給 tsdown
+
+## handle electron restart
+
+- 按 r + enter 重啟的行為跟 change vite.config 不一樣, tsdown build 會莫名的立即被執行一次, 之後 reload config 又會被執行一次
+- 通用方法是 child 記在 global 後, 無條件置頂先 kill 一次
+- 另一個作法是透過 tsdown onSuccess 給的 abort signal 去 spawn, tsdown rebuild 時就能自動關閉, 但需處理 AbortError
+- 為了避免 vite restart 時, tsdown 殘留殭屍程序, 現在讓 vite restart 與 tsdown 隔離
+
+## TODO
+
+- 嘗試用 tsdown.config 然後 spawn tsdown cli 的方案, 也許能控制 kill tsdown, 但會出現深層 spawn

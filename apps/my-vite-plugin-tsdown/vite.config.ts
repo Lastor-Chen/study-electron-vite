@@ -37,7 +37,9 @@ export default defineConfig(({ command }) => {
             entry: './electron/preload/index.cts',
             outDir: './dist-electron/electron/preload',
             format: 'cjs',
-            onSuccess() { spawnElectron() },
+            onSuccess(_, signal) {
+              void spawnElectron(['.', '--no-sandbox'], { signal })
+            },
           },
         ],
       }),
