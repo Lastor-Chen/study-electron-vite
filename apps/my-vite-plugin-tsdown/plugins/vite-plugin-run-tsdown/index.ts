@@ -58,7 +58,6 @@ export function tsdownPlugin(options: TsBuildOptions): Plugin[] {
         void tsBuild({
           builds: options.builds,
           shared: options.shared,
-          onAllSuccess: options.onAllSuccess,
         })
       },
       // 只會在 vite 成功完成所有的 build 任務後觸發
@@ -73,7 +72,6 @@ export function tsdownPlugin(options: TsBuildOptions): Plugin[] {
         void tsBuild({
           builds: options.builds,
           shared: options.shared,
-          onAllSuccess: options.onAllSuccess,
         })
       },
     },

@@ -37,9 +37,9 @@ export default defineConfig(({ command }) => {
             entry: './electron/preload/index.cts',
             outDir: './dist-electron/electron/preload',
             format: 'cjs',
+            onSuccess() { spawnElectron() },
           },
         ],
-        onAllSuccess: isDev ? (() => spawnElectron()) : undefined,
       }),
     ],
   }
