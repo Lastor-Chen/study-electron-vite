@@ -20,9 +20,5 @@
   "license": "ISC",
   "dependencies": {
     "dayjs": "^1.11.13"
-  },
-  "devDependencies": {
-    "tsdown": "^0.15.12",
-    "vue-tsc": "^2.2.12"
   }
 }

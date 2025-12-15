@@ -38,7 +38,9 @@ export default defineConfig(({ command }) => {
             outDir: './dist-electron/electron/preload',
             format: 'cjs',
             onSuccess(_, signal) {
-              void spawnElectron(['.', '--no-sandbox'], { signal })
+              if (isDev) {
+                void spawnElectron(['.', '--no-sandbox'], { signal })
+              }
             },
           },
         ],
