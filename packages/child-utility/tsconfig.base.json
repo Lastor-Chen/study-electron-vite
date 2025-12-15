@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    // 不用 tsc compile, 使 references 上下文寬鬆化
+    "composite": false,
+    "noEmit": true,
+    "types": [],
+
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["ESNext"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "allowImportingTsExtensions": true,
+    "forceConsistentCasingInFileNames": true,
+    "libReplacement": false,
+
+    /* Linting */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "verbatimModuleSyntax": true,
+
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
