@@ -1,4 +1,4 @@
-import { assignMessageHandler, wrapIpcChild } from '@/sharedUtils'
+import { assignMessageHandler, wrapIpcChild } from '@/electron/sharedUtils'
 
 import type {
 	ChildCallMessage,

@@ -1,4 +1,4 @@
-import { assignMessageHandler } from '@/sharedUtils'
+import { assignMessageHandler } from '@/electron/sharedUtils'
 
 const extendedPort = assignMessageHandler(process.parentPort)
 

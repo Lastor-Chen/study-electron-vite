@@ -1,6 +1,6 @@
 import { utilityProcess, ipcMain, BrowserWindow } from 'electron'
 
-import { invokeChildApi, assignMessageHandler, wrapIpcChild } from '@/sharedUtils'
+import { invokeChildApi, assignMessageHandler, wrapIpcChild } from '@/electron/sharedUtils'
 
 import type {
 	ChildName,
