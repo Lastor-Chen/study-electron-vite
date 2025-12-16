@@ -4,12 +4,16 @@
   "description": "",
   "type": "module",
   "files": [
-    "src"
+    "dist"
   ],
-  "types": "./src/index.ts",
-  "main": "./src/index.js",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./dist/electron/main/index.js",
+    "./child": "./dist/electron/child/index.js",
+    "./initChildProcess": "./dist/electron/child/initProcess.js",
+    "./preload": "./dist/preload/index.js",
+    "./vue": "./dist/vue/index.js",
+    "./package.json": "./package.json",
+    "./dist/*": "./dist/*"
   },
   "scripts": {
     "tscheck": "tsc",

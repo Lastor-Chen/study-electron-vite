@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { tsdownPlugin, spawnElectron } from './plugins/vite-plugin-run-tsdown'
@@ -6,6 +7,11 @@ export default defineConfig(({ command }) => {
   const isDev = command === 'serve'
 
   return {
+    resolve: {
+      alias: {
+        '@': path.resolve(import.meta.dirname, './src'),
+      },
+    },
     plugins: [
       vue(),
       tsdownPlugin({
@@ -25,7 +31,7 @@ export default defineConfig(({ command }) => {
             name: 'Main',
             entry: [
               './electron/main/index.ts',
-              './electron/child/index.ts',
+              './electron/child/*/index.ts',
               './shared/**/*.ts',
             ],
             outDir: './dist-electron',
@@ -34,9 +40,10 @@ export default defineConfig(({ command }) => {
           },
           {
             name: 'Preload',
-            entry: './electron/preload/index.cts',
+            entry: './electron/preload/index.ts',
             outDir: './dist-electron/electron/preload',
             format: 'cjs',
+            noExternal: ['@packages/child-utility/preload'],
             onSuccess(_, signal) {
               if (isDev) {
                 void spawnElectron(['.', '--no-sandbox'], { signal })

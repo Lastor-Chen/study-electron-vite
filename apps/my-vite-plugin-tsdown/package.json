@@ -16,6 +16,7 @@
   "author": "Lastor",
   "license": "ISC",
   "dependencies": {
+    "@packages/child-utility": "workspace:*",
     "dayjs": "^1.11.13"
   }
 }

@@ -4,6 +4,7 @@ import { app, BrowserWindow, ipcMain, utilityProcess } from 'electron'
 import dayjs from 'dayjs'
 
 import { ping } from '@shared/utils/index.js' // tsc 不會處理 path alias
+import { forkChild } from '@packages/child-utility'
 
 console.log('env.DEV', import.meta.env.DEV)
 console.log('env.FOO', import.meta.env.FOO)
@@ -31,30 +32,11 @@ function createWindow() {
   }
 }
 
-// TODO try MessageChannelMain?
-function forkChild() {
-  const child = utilityProcess.fork(path.join(import.meta.dirname, '../child/index.js'), [], {
-    stdio: 'inherit',
-  })
-
-  child.on('exit', () => console.log('[child] exit'))
-
-  ipcMain.handle('call-child', async (_, msg: string) => {
-    const result = await new Promise((resolve) => {
-      child.once('message', (returnVal) => {
-        resolve(returnVal)
-      })
-
-      child.postMessage(msg)
-    })
-
-    return result
-  })
-}
-
 app.whenReady().then(() => {
+  forkChild('childA', path.resolve(import.meta.dirname, '../child/childA/index.js'))
+  forkChild('childB', path.resolve(import.meta.dirname, '../child/childB/index.js'))
+
   createWindow()
-  forkChild()
 })
 
 app.on('window-all-closed', () => {

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 /** 規範現有的 child name */
-export type ChildName = 'nodeAgent'
+export type ChildName = string
 
 export type ApiCalls = Record<string, (...args: any[]) => unknown | Promise<unknown>>
 

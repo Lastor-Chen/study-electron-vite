@@ -56,6 +56,9 @@ importers:
 
   apps/my-vite-plugin-tsdown:
     dependencies:
+      '@packages/child-utility':
+        specifier: workspace:*
+        version: link:../../packages/child-utility
       dayjs:
         specifier: ^1.11.13
         version: 1.11.13
@@ -83,7 +86,14 @@ importers:
         specifier: ^0.29.0
         version: 0.29.0
 
-  packages/childUtility: {}
+  packages/child-utility:
+    dependencies:
+      electron:
+        specifier: '>=28.0.0'
+        version: 36.4.0
+      vue:
+        specifier: '>=3.4.0'
+        version: 3.5.17(typescript@5.8.3)
 
 packages:
 
@@ -2063,6 +2073,7 @@ packages:
   tsdown@0.17.4:
     resolution: {integrity: sha512-z+kNuv1rwM1POQIufDUVrdNc/uGy0ueRVafCyDH39IdHxin4JXgB8DNGSPoqdIpcOpqUoRbNreK8NxENFmlhKw==}
     engines: {node: '>=20.19.0'}
+    deprecated: Including an unexpected breaking change (copy behavior)
     hasBin: true
     peerDependencies:
       '@arethetypeswrong/core': ^0.18.1
