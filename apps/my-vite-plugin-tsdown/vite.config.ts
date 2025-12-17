@@ -20,11 +20,12 @@ export default defineConfig(({ command }) => {
           tsconfig: 'tsconfig.electron.json',
           external: 'electron',
           fixedExtension: false,
-          watch: isDev ? ['electron', 'shared'] : undefined,
+          watch: isDev ? true : undefined,
           logLevel: isDev ? 'warn' : 'info',
           env: {
             FOO: 'BAR',
           },
+          onSuccess: isDev ? () => spawnElectron() : undefined
         },
         builds: [
           {
@@ -44,11 +45,6 @@ export default defineConfig(({ command }) => {
             outDir: './dist-electron/electron/preload',
             format: 'cjs',
             noExternal: ['@packages/child-utility/preload'],
-            onSuccess(_, signal) {
-              if (isDev) {
-                void spawnElectron(['.', '--no-sandbox'], { signal })
-              }
-            },
           },
         ],
       }),
