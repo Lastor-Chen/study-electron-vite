@@ -13,9 +13,6 @@ importers:
 
   .:
     dependencies:
-      tsdown:
-        specifier: ^0.17.4
-        version: 0.17.4(typescript@5.8.3)(vue-tsc@3.1.8(typescript@5.8.3))
       vue:
         specifier: ^3.5.17
         version: 3.5.17(typescript@5.8.3)
@@ -38,6 +35,9 @@ importers:
       electron-builder:
         specifier: ^26.0.12
         version: 26.0.12(electron-builder-squirrel-windows@26.0.12)
+      tsdown:
+        specifier: ^0.18.0
+        version: 0.18.0(typescript@5.8.3)(vue-tsc@3.1.8(typescript@5.8.3))
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -2070,10 +2070,9 @@ packages:
   truncate-utf8-bytes@1.0.2:
     resolution: {integrity: sha512-95Pu1QXQvruGEhv62XCMO3Mm90GscOCClvrIUwCM0PYOXK3kaF3l3sIHxx71ThJfcbM2O5Au6SO3AWCSEfW4mQ==}
 
-  tsdown@0.17.4:
-    resolution: {integrity: sha512-z+kNuv1rwM1POQIufDUVrdNc/uGy0ueRVafCyDH39IdHxin4JXgB8DNGSPoqdIpcOpqUoRbNreK8NxENFmlhKw==}
+  tsdown@0.18.0:
+    resolution: {integrity: sha512-Yotdh3NzizysnqR96xfpHFYtEntk1cZvSRHz8A+Pn3ZHNdTQa4fBQxh6HHzWZwfjdQv47xb7GCv6vEWMtxBirw==}
     engines: {node: '>=20.19.0'}
-    deprecated: Including an unexpected breaking change (copy behavior)
     hasBin: true
     peerDependencies:
       '@arethetypeswrong/core': ^0.18.1
@@ -4379,7 +4378,7 @@ snapshots:
     dependencies:
       utf8-byte-length: 1.0.5
 
-  tsdown@0.17.4(typescript@5.8.3)(vue-tsc@3.1.8(typescript@5.8.3)):
+  tsdown@0.18.0(typescript@5.8.3)(vue-tsc@3.1.8(typescript@5.8.3)):
     dependencies:
       ansis: 4.2.0
       cac: 6.7.14
