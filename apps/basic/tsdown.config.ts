@@ -31,6 +31,7 @@ function startElectron(entryFile: string) {
 const commonConfig = {
   target: ['node22'],
   outDir: 'dist-electron',
+  fixedExtension: false,
   external: 'electron',
   tsconfig: 'tsconfig.electron.json',
 } satisfies UserConfig
@@ -39,12 +40,14 @@ export default defineConfig([
   // 單獨處理 electron preload
   {
     ...commonConfig,
+    name: 'Preload',
     entry: ['./electron/preload/index.cts'],
     outDir: 'dist-electron/electron/preload',
     format: ['cjs'],
   },
   {
     ...commonConfig,
+    name: 'Main',
     entry: [
       './electron/main/index.ts',
       './electron/child/index.ts',

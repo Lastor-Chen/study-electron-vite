@@ -23,9 +23,10 @@
     "cross-env": "^7.0.3",
     "electron": "36.4.0",
     "electron-builder": "^26.0.12",
+    "tsdown": "^0.18.0",
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
-    "vue-tsc": "^3.0.1"
+    "vue-tsc": "^3.1.8"
   },
   "dependencies": {
     "vue": "^3.5.17"

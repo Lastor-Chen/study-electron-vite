@@ -16,10 +16,7 @@
   "author": "Lastor",
   "license": "ISC",
   "dependencies": {
+    "@packages/child-utility": "workspace:*",
     "dayjs": "^1.11.13"
-  },
-  "devDependencies": {
-    "tsdown": "^0.16.3",
-    "vue-tsc": "^3.1.3"
   }
 }

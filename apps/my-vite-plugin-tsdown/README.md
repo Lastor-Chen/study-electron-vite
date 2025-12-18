@@ -2,15 +2,11 @@
 
 ## Memo
 
-- vite 跟 tsdown 的 watch 預設都會監聽整個專案
 - `$ electron .` 他會去找 packageJson.main
 - 程序化使用與 tsdown.config 混用的行為不明，最好 `config: false` 禁用
-- multi builds 時 onSuccess, watch 是各自獨立的, 所以會有兩種 onSuccess 方案
-  - 各自只 watch 自己, onSuccess 都掛上去
-  - 統一 watch 所有目錄, onSuccess 只掛一個
 - tsdown onSuccess 可以直接跑 `$ electron .` 但有缺點
   - owner 會是 tsdown, 無法監聽他 exit 後一併關閉 vite
-  - (已解決) 若是 vite restart 會重 run tsdown, 但無法關閉前一個 electron 殘留殭屍進程
+  - (已解決) 若是 vite restart 會 re-run tsdown, 但無法關閉前一個 electron 殘留殭屍進程
 - vite restart (改 config) 是 reload config 不是 restart node, 閉包變數會被清掉, 但 global.process 會是同一個
 - 不能判斷 `child.killed` 才去 kill electron，否則 vite r key restart 的生命週期不一樣，會導致誤判產生殭屍進程
 - process 相關監聽要用 `once` 去掛，避免 vite restart 時報出監聽重複掛太多的問題
@@ -31,6 +27,12 @@
 - 另一個作法是透過 tsdown onSuccess 給的 abort signal 去 spawn, tsdown rebuild 時就能自動關閉, 但需處理 AbortError
 - 為了避免 vite restart 時, tsdown 殘留殭屍程序, 現在讓 vite restart 與 tsdown 隔離
 
-## TODO
+## Watcher
 
-- 嘗試用 tsdown.config 然後 spawn tsdown cli 的方案, 也許能控制 kill tsdown, 但會出現深層 spawn
+- vite 跟 tsdown 的 watch 預設都會監聽整個專案
+  - tsdown `v0.17.0` 改用 rolldown watcher, 只會監聽 entry 範圍
+  - 指定 watch 範圍外, 會觸發, 但 clean 之後會 build 不出東西
+  - 無法再透過 count 實現 onAllSuccess
+- multi builds 時 onSuccess, watch 各自獨立, 可有兩種 onSuccess 方案
+  - 各自只 watch 自己, onSuccess 都掛上去
+  - ~~統一 watch 所有目錄, onSuccess 只掛一個~~

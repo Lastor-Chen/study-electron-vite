@@ -1,5 +1,8 @@
-// CJS only
+// will compile to CJS
 import { contextBridge, ipcRenderer } from 'electron'
+
+import { bridgeIpcChild } from '@packages/child-utility/preload'
+
 import type { ElectronAPI } from '@shared/types.js'
 
 contextBridge.exposeInMainWorld('versions', {
@@ -12,7 +15,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   ping() {
     return ipcRenderer.invoke('ping')
   },
-  callChild(msg) {
-    return ipcRenderer.invoke('call-child', msg)
-  },
 } satisfies ElectronAPI)
+
+bridgeIpcChild()
