@@ -62,5 +62,5 @@ $ pnpm patch-commit <temp_dir_path>
 
 ## TODO
 
-- [] vite-plugin-tsdown 拆成 packages
-- [] run node native in ESM
+- [ ] vite-plugin-tsdown 拆成 packages
+- [ ] run node native in ESM
