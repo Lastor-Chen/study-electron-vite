@@ -5,7 +5,7 @@ import tsdownPkg from 'tsdown/package.json' with { type: 'json' }
 import type { Plugin } from 'vite'
 import type { TsBuildOptions } from './compiler'
 
-export { spawnElectron } from './electronStartup'
+export * from './electronStartup'
 
 export type TsdownPluginOptions = TsBuildOptions
 

@@ -15,7 +15,7 @@ export async function spawnElectron(
   argv = ['.', '--no-sandbox'],
   options?: SpawnOptions,
 ) {
-  await abortElectronIfExit(cyan('[tsdown]'), 'electron restart.')
+  await abortElectronIfExist(cyan('[tsdown]'), 'electron restart.')
   ab = new AbortController()
 
   // 存到 global process 上, 避免 vite config 熱更新時丟失
@@ -34,13 +34,15 @@ export async function spawnElectron(
   if (!process.hasHandleExit) {
     process.hasHandleExit = true
     process.once('exit', () => {
-      void abortElectronIfExit(cyan('[tsdown]'), 'electron closed.')
+      void abortElectronIfExist(cyan('[tsdown]'), 'electron closed.')
     })
   }
+
+  return process.electronProc
 }
 
 /** re-spawn 前先 kill 前一個的通用作法 */
-function abortElectronIfExit(...msgs: string[]) {
+export function abortElectronIfExist(...msgs: string[]) {
   return new Promise<void>((resolve) => {
     if (process.electronProc) {
       process.electronProc.removeAllListeners('close') // 避免 restart 觸發 onClose
@@ -55,4 +57,26 @@ function abortElectronIfExit(...msgs: string[]) {
       resolve()
     }
   })
+}
+
+export function createDebounced<T extends (...args: any[]) => any>(fn: T, delay = 100) {
+  let timer: NodeJS.Timeout | undefined
+  let resolves: ((value: Awaited<ReturnType<T>> | null) => void)[] = []
+
+  return function(...args: any[]) {
+    clearTimeout(timer)
+    resolves.forEach((r) => r(null))
+    resolves = []
+
+    const { promise, resolve } = Promise.withResolvers<Awaited<ReturnType<T>> | null>()
+    resolves.push(resolve)
+
+    timer = setTimeout(async () => {
+      timer = undefined
+      const res = await fn(...args)
+      resolve(res)
+    }, delay)
+
+    return promise
+  }
 }

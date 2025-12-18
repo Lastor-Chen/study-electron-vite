@@ -1,10 +1,11 @@
 import path from 'node:path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { tsdownPlugin, spawnElectron } from './plugins/vite-plugin-run-tsdown'
+import { tsdownPlugin, spawnElectron, createDebounced } from './plugins/vite-plugin-run-tsdown'
 
 export default defineConfig(({ command }) => {
   const isDev = command === 'serve'
+  const startup = createDebounced(spawnElectron)
 
   return {
     resolve: {
@@ -25,7 +26,7 @@ export default defineConfig(({ command }) => {
           env: {
             FOO: 'BAR',
           },
-          onSuccess: isDev ? () => spawnElectron() : undefined
+          onSuccess: isDev ? () => void startup() : undefined,
         },
         builds: [
           {
