@@ -1,4 +1,5 @@
 import path from 'node:path'
+import fs from 'node:fs'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { tsdownPlugin, spawnElectron, createDebounced } from './plugins/vite-plugin-run-tsdown'
@@ -16,36 +17,47 @@ export default defineConfig(({ command }) => {
     plugins: [
       vue(),
       tsdownPlugin({
-        shared: {
-          target: 'node22',
-          tsconfig: 'tsconfig.electron.json',
-          external: 'electron',
-          fixedExtension: false,
-          watch: isDev ? true : undefined,
-          logLevel: isDev ? 'warn' : 'info',
-          env: {
-            FOO: 'BAR',
-          },
-          onSuccess: isDev ? () => void startup() : undefined,
-        },
+        shared: undefined,
         builds: [
           {
-            name: 'Main',
             entry: [
-              './electron/main/index.ts',
-              './electron/child/*/index.ts',
-              './shared/**/*.ts',
+              'electron/main/index.ts',
+              'electron/child/*/index.ts',
+              'shared/**/*.ts',
+              'electron/preload/index.ts',
             ],
-            outDir: './dist-electron',
-            format: 'esm',
+            outDir: 'dist-electron',
+            target: 'node22',
+            fixedExtension: false,
             unbundle: true,
-          },
-          {
-            name: 'Preload',
-            entry: './electron/preload/index.ts',
-            outDir: './dist-electron/electron/preload',
-            format: 'cjs',
-            noExternal: ['@packages/child-utility/preload'],
+            external: 'electron',
+            tsconfig: 'tsconfig.electron.json',
+            env: {
+              FOO: 'BAR',
+            },
+            watch: isDev,
+            logLevel: isDev ? 'warn' : 'info',
+            onSuccess: isDev ? () => void startup() : undefined,
+            format: {
+              esm: {
+                hooks: {
+                  "build:done"(ctx) {
+                    // remove esm's preload
+                    fs.rmSync(
+                      path.resolve(ctx.options.outDir, './electron/preload/index.js'),
+                      { force: true },
+                    )
+                  },
+                },
+              },
+              cjs: {
+                entry: 'electron/preload/index.ts',
+                outDir: 'dist-electron/electron/preload',
+                unbundle: false,
+                skipNodeModulesBundle: false,
+                noExternal: (id) => id.includes('@packages/child-utility'),
+              },
+            },
           },
         ],
       }),
