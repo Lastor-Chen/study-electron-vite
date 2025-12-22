@@ -1,6 +1,4 @@
 import { tsBuild } from './compiler'
-import { cyan, green } from './simpleColor'
-import tsdownPkg from 'tsdown/package.json' with { type: 'json' }
 
 import type { Plugin } from 'vite'
 import type { TsBuildOptions } from './compiler'
@@ -39,22 +37,12 @@ export function tsdownPlugin(options: TsBuildOptions): Plugin[] {
       configureServer() {
         if (!isServe) return
 
-        console.log(
-          cyan(`\ntsdown v${tsdownPkg.version}`),
-          green('building for development...'),
-        )
-
         // 不 await 避免阻塞 vite
         void tsBuild(options)
       },
       // 只會在 vite 成功完成所有的 build 任務後觸發
       closeBundle() {
         if (!isBuild) return
-
-        console.log(
-          cyan(`\ntsdown v${tsdownPkg.version}`),
-          green('building for production...'),
-        )
 
         void tsBuild(options)
       },

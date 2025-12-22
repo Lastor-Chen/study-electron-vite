@@ -1,9 +1,15 @@
 import { build } from 'tsdown'
+import tsdownPkg from 'tsdown/package.json' with { type: 'json' }
+
+import { cyan, green } from './simpleColor'
+
 import type { InlineConfig } from 'tsdown'
 
 export type TsBuildOptions = {
   builds: InlineConfig[]
 }
+
+const nodeEnv = process.env.NODE_ENV
 
 const defaultConfig: InlineConfig = {
   config: false,
@@ -11,6 +17,11 @@ const defaultConfig: InlineConfig = {
 
 export async function tsBuild(options: TsBuildOptions) {
   if (process.isTsdownWatched) return
+
+  console.log(
+    cyan(`\ntsdown v${tsdownPkg.version}`),
+    green(`building for ${nodeEnv}...`),
+  )
 
   const { builds } = options
 
