@@ -50,7 +50,9 @@ export default defineConfig(({ command }) => {
                 },
               },
               cjs: {
-                entry: 'electron/preload/index.ts',
+                entry: {
+                  index: 'electron/preload/index.ts',
+                },
                 outDir: 'dist-electron/electron/preload',
                 unbundle: false,
                 skipNodeModulesBundle: false,
