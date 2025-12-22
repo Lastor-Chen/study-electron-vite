@@ -17,7 +17,6 @@ export default defineConfig(({ command }) => {
     plugins: [
       vue(),
       tsdownPlugin({
-        shared: undefined,
         builds: [
           {
             entry: [

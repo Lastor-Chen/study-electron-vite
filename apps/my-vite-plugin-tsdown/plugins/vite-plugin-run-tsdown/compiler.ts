@@ -3,7 +3,6 @@ import type { InlineConfig } from 'tsdown'
 
 export type TsBuildOptions = {
   builds: InlineConfig[]
-  shared?: InlineConfig
 }
 
 const defaultConfig: InlineConfig = {
@@ -13,12 +12,11 @@ const defaultConfig: InlineConfig = {
 export async function tsBuild(options: TsBuildOptions) {
   if (process.isTsdownWatched) return
 
-  const { builds, shared } = options
+  const { builds } = options
 
   for (const userConfig of builds) {
     const buildOption: InlineConfig = {
       ...defaultConfig,
-      ...shared,
       ...userConfig,
     }
 

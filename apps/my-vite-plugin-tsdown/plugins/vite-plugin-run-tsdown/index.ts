@@ -29,20 +29,10 @@ export function tsdownPlugin(options: TsBuildOptions): Plugin[] {
       configResolved(config) {
         // merge vite env
         const importMetaEnv = config.env
-
-        if (options.shared?.env) {
-          options.shared.env = {
-            ...importMetaEnv,
-            ...options.shared.env,
-          }
-        }
-
         options.builds.forEach((build) => {
-          if (build.env) {
-            build.env = {
-              ...importMetaEnv,
-              ...build.env,
-            }
+          build.env = {
+            ...importMetaEnv,
+            ...build.env,
           }
         })
       },
@@ -55,10 +45,7 @@ export function tsdownPlugin(options: TsBuildOptions): Plugin[] {
         )
 
         // 不 await 避免阻塞 vite
-        void tsBuild({
-          builds: options.builds,
-          shared: options.shared,
-        })
+        void tsBuild(options)
       },
       // 只會在 vite 成功完成所有的 build 任務後觸發
       closeBundle() {
@@ -69,10 +56,7 @@ export function tsdownPlugin(options: TsBuildOptions): Plugin[] {
           green('building for production...'),
         )
 
-        void tsBuild({
-          builds: options.builds,
-          shared: options.shared,
-        })
+        void tsBuild(options)
       },
     },
   ]
