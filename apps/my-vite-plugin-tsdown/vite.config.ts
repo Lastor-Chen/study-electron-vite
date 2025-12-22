@@ -2,11 +2,11 @@ import path from 'node:path'
 import fs from 'node:fs'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { tsdownPlugin, spawnElectron, createDebounced } from './plugins/vite-plugin-run-tsdown'
+
+import { tsdownPlugin, spawnElectron } from './plugins/vite-plugin-run-tsdown'
 
 export default defineConfig(({ command }) => {
   const isDev = command === 'serve'
-  const startup = createDebounced(spawnElectron)
 
   return {
     resolve: {
@@ -17,6 +17,8 @@ export default defineConfig(({ command }) => {
     plugins: [
       vue(),
       tsdownPlugin({
+        viteWatch: ['electron/**', 'shared/**'],
+        onAllSuccess: isDev ? (() => void spawnElectron()) : undefined,
         builds: [
           {
             entry: [
@@ -34,9 +36,7 @@ export default defineConfig(({ command }) => {
             env: {
               FOO: 'BAR',
             },
-            watch: isDev,
             logLevel: isDev ? 'warn' : 'info',
-            onSuccess: isDev ? () => void startup() : undefined,
             format: {
               esm: {
                 hooks: {

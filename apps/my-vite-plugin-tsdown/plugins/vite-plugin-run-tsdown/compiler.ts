@@ -7,6 +7,7 @@ import type { InlineConfig } from 'tsdown'
 
 export type TsBuildOptions = {
   builds: InlineConfig[]
+  onAllSuccess?: () => void
 }
 
 const nodeEnv = process.env.NODE_ENV
@@ -23,8 +24,7 @@ export async function tsBuild(options: TsBuildOptions) {
     green(`building for ${nodeEnv}...`),
   )
 
-  const { builds } = options
-
+  const { builds, onAllSuccess } = options
   for (const userConfig of builds) {
     const buildOption: InlineConfig = {
       ...defaultConfig,
@@ -39,4 +39,6 @@ export async function tsBuild(options: TsBuildOptions) {
 
     await build(buildOption)
   }
+
+  onAllSuccess?.()
 }

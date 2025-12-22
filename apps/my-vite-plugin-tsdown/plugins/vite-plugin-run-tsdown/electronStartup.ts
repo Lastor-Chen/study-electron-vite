@@ -59,6 +59,7 @@ export function abortElectronIfExist(...msgs: string[]) {
   })
 }
 
+// bk
 export function createDebounced<T extends (...args: any[]) => any>(fn: T, delay = 100) {
   let timer: NodeJS.Timeout | undefined
   let resolves: ((value: Awaited<ReturnType<T>> | null) => void)[] = []
