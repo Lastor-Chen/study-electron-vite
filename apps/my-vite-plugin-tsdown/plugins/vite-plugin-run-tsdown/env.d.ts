@@ -6,6 +6,7 @@ declare global {
       electronProc: ChildProcess | undefined
       hasHandleExit: boolean | undefined
       isTsdownWatched: boolean | undefined
+      ab: AbortController | undefined
     }
   }
 }

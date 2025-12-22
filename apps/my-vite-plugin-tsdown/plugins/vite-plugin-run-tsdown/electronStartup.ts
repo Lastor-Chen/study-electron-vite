@@ -5,8 +5,6 @@ import { cyan } from './simpleColor'
 
 import type { SpawnOptions } from 'node:child_process'
 
-let ab: AbortController | undefined
-
 /**
  * electron argv path 給 `.` 會以 packageJson.main 作為進入點
  * @param argv default is `['.', '--no-sandbox']`
@@ -16,13 +14,13 @@ export async function spawnElectron(
   options?: SpawnOptions,
 ) {
   await abortElectronIfExist(cyan('[tsdown]'), 'electron restart.')
-  ab = new AbortController()
+  process.ab = new AbortController()
 
   // 存到 global process 上, 避免 vite config 熱更新時丟失
   process.electronProc = spawn(electronPath as unknown as string, argv, {
     stdio: 'inherit',
     ...options,
-    signal: ab.signal,
+    signal: process.ab.signal,
   })
 
   process.electronProc.once('close', () => {
@@ -52,7 +50,7 @@ export function abortElectronIfExist(...msgs: string[]) {
         resolve()
       })
 
-      ab?.abort()
+      process.ab?.abort()
     } else {
       resolve()
     }

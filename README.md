@@ -63,5 +63,6 @@ $ pnpm patch-commit <temp_dir_path>
 ## TODO
 
 - [ ] vite-plugin-tsdown 考慮 vite watcher 方案 
+  - AbortController 拆出來
 - [ ] vite-plugin-tsdown 拆成 packages
 - [ ] run node native in ESM
