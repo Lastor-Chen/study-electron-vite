@@ -2,8 +2,7 @@ import path from 'node:path'
 import fs from 'node:fs'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-
-import { tsdownPlugin, spawnElectron } from './plugins/vite-plugin-run-tsdown'
+import { tsdownPlugin, spawnElectron } from '@packages/vite-plugin-tsdown'
 
 export default defineConfig(({ command }) => {
   const isDev = command === 'serve'

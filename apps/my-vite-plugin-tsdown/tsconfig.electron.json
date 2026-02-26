@@ -4,12 +4,32 @@
 
     "target": "esnext",
     "module": "esnext",
+    "types": [
+      "node",
+      "vite/types/importMeta.d.ts"
+    ],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
     "moduleResolution": "bundler",
-    "outDir": "dist-electron",
+    "isolatedModules": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
-    "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "libReplacement": false,
+    "verbatimModuleSyntax": true,
     "noEmit": true,
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "noUncheckedIndexedAccess": true,
 
     "baseUrl": ".",
     "paths": {

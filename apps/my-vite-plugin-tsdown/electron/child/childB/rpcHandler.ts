@@ -1,7 +1,7 @@
 import { createIpcChild } from '@packages/child-utility/child'
 
-import { ChildBCalls } from '@shared/childB/type'
-import { ChildACalls, ChildAEvents } from '@shared/childA/type'
+import type { ChildBCalls } from '@shared/childB/type'
+import type { ChildACalls, ChildAEvents } from '@shared/childA/type'
 
 const childA = createIpcChild<ChildACalls, ChildAEvents>('childA')
 

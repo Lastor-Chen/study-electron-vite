@@ -1,5 +1,3 @@
-/// <reference types="vite/types/importMeta.d.ts" />
-
 declare namespace NodeJS {
   interface ProcessEnv {
     readonly NODE_ENV?: string
