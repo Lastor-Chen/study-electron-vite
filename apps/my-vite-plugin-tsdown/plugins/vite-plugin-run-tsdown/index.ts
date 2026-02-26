@@ -25,6 +25,7 @@ export function tsdownPlugin(options: TsdownPluginOptions): Plugin[] {
 
   let isServe: boolean = false
   let isBuild: boolean = false
+  if (!process._vpt) process._vpt = {}
 
   const cwd = process.cwd()
 

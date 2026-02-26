@@ -18,7 +18,7 @@ export default defineConfig(({ command }) => {
       vue(),
       tsdownPlugin({
         viteWatch: ['electron/**', 'shared/**'],
-        onAllSuccess: isDev ? (() => void spawnElectron()) : undefined,
+        onAllSuccess: isDev ? () => spawnElectron() : undefined,
         builds: [
           {
             entry: [
