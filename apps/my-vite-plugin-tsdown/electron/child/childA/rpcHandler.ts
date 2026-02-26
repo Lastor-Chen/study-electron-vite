@@ -1,6 +1,6 @@
 import { createTrigger } from '@packages/child-utility/child'
 
-import { ChildACalls, ChildAEvents } from '@shared/childA/type'
+import type { ChildACalls, ChildAEvents } from '@shared/childA/type'
 
 const trigger = createTrigger<ChildAEvents>()
 

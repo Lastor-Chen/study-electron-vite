@@ -1,9 +1,13 @@
 {
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
+
     "target": "ESNext",
     "lib": ["ESNext"],
-    "types": ["@packages/vite-plugin-tsdown/client"],
+    "types": [
+      "node",
+      "@packages/vite-plugin-tsdown/client"
+    ],
     "module": "ESNext",
     "skipLibCheck": true,
 

@@ -1,6 +1,6 @@
 import path from 'node:path'
 
-import { app, BrowserWindow, ipcMain, utilityProcess } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import dayjs from 'dayjs'
 
 import { ping } from '@shared/utils/index.js' // tsc 不會處理 path alias
@@ -47,7 +47,7 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
   const allWindows = BrowserWindow.getAllWindows()
-  if (allWindows.length) return allWindows[0].focus()
+  if (allWindows.length) return allWindows[0]?.focus()
 
   createWindow()
 })
