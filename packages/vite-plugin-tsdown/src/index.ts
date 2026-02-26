@@ -31,7 +31,7 @@ export function tsdownPlugin(options: TsdownPluginOptions): Plugin[] {
 
   return [
     {
-      name: 'vite-plugin-run-tsdown',
+      name: 'vite-plugin-tsdown',
       config(config, { command }) {
         // save vite command
         isServe = command === 'serve'

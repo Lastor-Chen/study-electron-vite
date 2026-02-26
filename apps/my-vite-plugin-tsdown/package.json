@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@packages/child-utility": "workspace:*",
+    "@packages/vite-plugin-tsdown": "workspace:*",
     "dayjs": "^1.11.13"
   }
 }
