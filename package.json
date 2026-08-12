@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
+    "cleandep": "rm -rf node_modules && pnpm -r exec rm -rf node_modules",
     "basic": "pnpm --filter=@apps/basic",
     "myp": "pnpm --filter=@apps/my-vite-plugin-tsdown",
     "vep": "pnpm --filter=@apps/vite-electron-plugin",

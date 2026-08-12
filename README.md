@@ -66,3 +66,9 @@ $ pnpm patch-commit <temp_dir_path>
   - [x] AbortController 拆出來
 - [x] vite-plugin-tsdown 拆成 packages
 - [ ] run node native in ESM
+
+### electron-builder vs pnpm monorepo issue
+
+electron-builder 原本使用 pnpm 會有問題, 理論上已經支援 pnpm 結構
+
+https://github.com/orgs/pnpm/discussions/5146
