@@ -1,3 +1,4 @@
+/// <reference types="vite-plugin-electron/electron-env.d.ts" />
 import fs from 'node:fs'
 import path from 'node:path'
 
@@ -5,6 +6,7 @@ import { defineConfig } from 'vite'
 import type { AliasOptions } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import electron from 'vite-plugin-electron/simple'
+import { startup } from 'vite-plugin-electron'
 import { globSync } from 'glob'
 
 // clear outDir before build
@@ -12,6 +14,20 @@ fs.rmSync('dist-electron', { recursive: true, force: true })
 
 const alias: AliasOptions = {
   '@shared': path.resolve(import.meta.dirname, './shared'),
+}
+
+// 在 mac 發生過 electron 有監聽 app before-quit 時, 熱重啟會有 error, 需要 hack
+// https://github.com/electron-vite/vite-plugin-electron/issues/251
+if (process.platform === 'darwin') {
+	startup.exit = async () => {
+		if (process.electronApp) {
+			await new Promise((resolve) => {
+				process.electronApp.removeAllListeners()
+				process.electronApp.once('exit', resolve)
+				process.electronApp.kill()
+			})
+		}
+	}
 }
 
 export default defineConfig(() => {

@@ -20,6 +20,8 @@ https://zhuanlan.zhihu.com/p/497638546
   - https://github.com/electron-vite/vite-plugin-electron/issues/249
 - 要自己熟悉 vite lib mode 的打包機制, 自己客製設定
 - 這套件最初預設 config 是 CJS base 的, 用 type: module 會有一些地方轉換不良, 要手動去控
+- 在 mac 發生過 electron 有監聽 app before-quit 時, 熱重啟會有 error, 需要 hack
+  - https://github.com/electron-vite/vite-plugin-electron/issues/251
 
 ## Other
 
